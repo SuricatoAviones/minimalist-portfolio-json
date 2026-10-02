@@ -1,54 +1,107 @@
-# Astro Starter Kit: Basics
+# Minimalist Portfolio JSON
+
+Portafolio personal minimalista construido con [Astro](https://astro.build) a partir de un único archivo `cv.json` (estándar [JSON Resume](https://jsonresume.org/schema)). Incluye la descarga del **CV en PDF optimizado para ATS**, generado automáticamente con los mismos datos.
+
+Basado en [midudev/minimalist-portfolio-json](https://github.com/midudev/minimalist-portfolio-json).
+
+## ✨ Características
+
+- **Un solo origen de datos**: edita `cv.json` y se actualizan la web y el PDF.
+- **CV en PDF compatible con ATS** en `/cv.pdf`, con botón «Descargar CV» y nombre de archivo `Nombre-Apellidos-CV.pdf`.
+- **Paleta de comandos** con <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd> (o el botón flotante en móvil): descargar CV, imprimir, enviar correo, llamar y abrir redes sociales.
+- **Modo claro y oscuro** automático según el sistema.
+- **Versión imprimible**: al imprimir se ocultan los controles y se muestran los datos de contacto en texto.
+- **Accesible**: HTML semántico, navegación por teclado, etiquetas ARIA y sin violaciones en [axe](https://github.com/dequelabs/axe-core) (WCAG 2.2 AA).
+- **SEO**: metadatos Open Graph/Twitter, URL canónica y datos estructurados `schema.org/Person`.
+- **Responsive** y 100 % estático (sin JavaScript salvo la paleta de comandos).
+
+## 🧰 Tecnologías
+
+- [Astro 4](https://docs.astro.build) + TypeScript (modo `strict`)
+- [PDFKit](https://pdfkit.org) para generar el PDF en tiempo de build
+- [pnpm](https://pnpm.io) como gestor de paquetes
+
+## 🚀 Empezar
+
+Requisitos: **Node.js 18.17.1+** y **pnpm** (se puede activar con `corepack enable`).
 
 ```sh
-npm create astro@latest -- --template basics
+pnpm install
+pnpm dev
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+Abre `http://localhost:4321`. El PDF está disponible en `http://localhost:4321/cv.pdf`.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## ✏️ Personalizar
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+1. Edita **`cv.json`** con tus datos. Sigue el esquema de JSON Resume; los tipos están en `src/types/cv.ts` y `pnpm check` avisa si falta algún campo obligatorio.
+2. Añade tu foto como **`public/me.webp`** (o cambia `basics.image`). Si no existe, se muestran tus iniciales.
+3. Si publicas el sitio en un dominio, configura `site` en `astro.config.mjs` para generar la URL canónica correcta (si no, se usa `basics.url`).
 
-## 🚀 Project Structure
+| Sección de `cv.json`                                                | Web | PDF |
+| :------------------------------------------------------------------ | :-: | :-: |
+| `basics` (nombre, titular, contacto, perfiles, resumen)             | ✅  | ✅  |
+| `work`, `education`, `projects`, `skills`                           | ✅  | ✅  |
+| `languages`, `certificates`, `awards`, `publications`, `volunteer`  |  —  | ✅  |
+| `interests`, `references`                                           |  —  |  —  |
 
-Inside of your Astro project, you'll see the following folders and files:
+Las secciones vacías (`[]`) no se muestran. Los iconos de redes sociales disponibles son `GitHub`, `LinkedIn` y `X`; los de habilidades están en `src/icons/`.
+
+## 📄 CV en PDF compatible con ATS
+
+El endpoint `src/pages/cv.pdf.ts` genera el PDF con `src/lib/cv-pdf.ts`; en `pnpm build` se exporta como archivo estático `dist/cv.pdf`. El documento sigue las recomendaciones habituales para los sistemas de seguimiento de candidatos (ATS):
+
+- **Una sola columna** y orden de lectura lineal: sin tablas, columnas, cuadros de texto, imágenes ni iconos.
+- **Texto real y seleccionable** con fuente estándar (Helvetica) y codificación WinAnsi, que se extrae sin errores.
+- **Encabezados estándar**: Perfil profesional, Experiencia laboral, Educación, Habilidades, Proyectos, Certificaciones, Idiomas…
+- **Datos de contacto en el cuerpo** del documento (no en cabeceras ni pies de página) y URLs escritas en texto.
+- **Fechas consistentes** en formato `MM/YYYY` y orden cronológico inverso (el de `cv.json`).
+- **Palabras clave**: tecnologías y competencias extraídas de `skills`, también incluidas en los metadatos.
+- **PDF etiquetado** (tagged PDF 1.7) con idioma `es-ES`, estructura de encabezados, listas y enlaces, y metadatos de título, autor y asunto.
+- **Nombre de archivo profesional**: `Nombre-Apellidos-CV.pdf`.
+
+Para comprobar cómo lo «lee» un ATS puedes extraer el texto, por ejemplo con `pdftotext -raw dist/cv.pdf -`.
+
+## 🧞 Comandos
+
+| Comando              | Acción                                                  |
+| :------------------- | :------------------------------------------------------ |
+| `pnpm install`       | Instala las dependencias                                |
+| `pnpm dev`           | Servidor de desarrollo en `localhost:4321`              |
+| `pnpm check`         | Comprueba tipos y errores de Astro (`astro check`)      |
+| `pnpm build`         | Comprueba tipos y genera el sitio y el PDF en `./dist/` |
+| `pnpm preview`       | Sirve localmente la versión de producción               |
+| `pnpm astro ...`     | Ejecuta comandos de la CLI de Astro                     |
+
+## 📁 Estructura
 
 ```text
 /
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+├── cv.json                  # Tus datos (JSON Resume)
+├── public/                  # Archivos estáticos (favicon, foto)
+└── src/
+    ├── cv.ts                # Módulo tipado del CV (alias @cv)
+    ├── types/cv.ts          # Tipos del esquema JSON Resume
+    ├── lib/
+    │   ├── cv-pdf.ts        # Generador del PDF compatible con ATS
+    │   ├── cv-download.ts   # Ruta y nombre del archivo PDF
+    │   ├── dates.ts         # Formato de fechas
+    │   └── avatar.ts        # Foto de perfil o iniciales
+    ├── components/
+    │   ├── KeyboardManager.astro  # Paleta de comandos (Ctrl/⌘ + K)
+    │   ├── Section.astro
+    │   └── sections/        # Hero, About, Experience, Education, Projects, Skills
+    ├── icons/               # Iconos SVG como componentes
+    ├── layouts/Layout.astro # HTML base, SEO, tema y estilos globales
+    └── pages/
+        ├── index.astro      # Portafolio
+        └── cv.pdf.ts        # Endpoint del CV en PDF
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🌍 Despliegue
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+El resultado de `pnpm build` es un sitio estático en `dist/` que puedes publicar en Vercel, Netlify, Cloudflare Pages o GitHub Pages sin configuración adicional.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 🙌 Créditos
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Diseño original y estructura de [@midudev](https://github.com/midudev) en [minimalist-portfolio-json](https://github.com/midudev/minimalist-portfolio-json).
