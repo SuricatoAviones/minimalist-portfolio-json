@@ -40,9 +40,7 @@
         "startDate": "2021-01-01",
         "endDate": null,
         "summary": "Streamer de programación más visto en Español en Twitch. +1 millón de seguidores entre todas mis redes sociales. Reconocido por Google, Microsoft y GitHub por mi impacto en la comunidad de desarrolladores.",
-        "highlights": [
-          "Started the company"
-        ]
+        "highlights": []
       },
       {
         "name": "Adevinta",
@@ -51,9 +49,7 @@
         "startDate": "2016-06-01",
         "endDate": "2022-09-01",
         "summary": "Lideré una convergencia técnica entre diferentes productos y migramos una arquitectura monolítica a otra más flexible y optimizada. Fomenté buenas prácticas y mejoras en la cultura de rendimiento, además de la entrega rápida de valor a los usuarios.",
-        "highlights": [
-          "Started the company"
-        ]
+        "highlights": []
       },
       {
         "name": "Hubii",
@@ -61,22 +57,10 @@
         "startDate": "2011-03-01",
         "endDate": "2016-05-01",
         "summary": "Desarrollé una plataforma de noticias geolocalizadas y una API para consumir la información. Escalé los servicios para soportar la carga de más de cientos de miles de peticiones al día. Recorté los tiempos de entrega y despliegues a producción a la mitad. Colaboré con Mozilla y Telefónica para desarrollar la primera app para televisores con FirefoxOS.",
-        "highlights": [
-          "Started the company"
-        ]
+        "highlights": []
       }
     ],
-    "volunteer": [{
-      "organization": "Organization",
-      "position": "Volunteer",
-      "url": "https://organization.com/",
-      "startDate": "2012-01-01",
-      "endDate": "2013-01-01",
-      "summary": "Description…",
-      "highlights": [
-        "Awarded 'Volunteer of the Month'"
-      ]
-    }],
+    "volunteer": [],
     "education": [{
       "institution": "Universitat Oberta de Catalunya",
       "url": "https://www.uoc.edu/portal/es/index.html",
@@ -89,25 +73,9 @@
         "DB1101 - Basic SQL"
       ]
     }],
-    "awards": [{
-      "title": "Award",
-      "date": "2014-11-01",
-      "awarder": "Company",
-      "summary": "There is no spoon."
-    }],
-    "certificates": [{
-      "name": "Certificate",
-      "date": "2021-11-07",
-      "issuer": "Company",
-      "url": "https://certificate.com"
-    }],
-    "publications": [{
-      "name": "Publication",
-      "publisher": "Company",
-      "releaseDate": "2014-10-01",
-      "url": "https://publication.com",
-      "summary": "Description…"
-    }],
+    "awards": [],
+    "certificates": [],
+    "publications": [],
     "skills": [
       {
         "name": "HTML",
@@ -197,17 +165,8 @@
         "fluency": "Advanced"
       }
     ],
-    "interests": [{
-      "name": "Wildlife",
-      "keywords": [
-        "Ferrets",
-        "Unicorns"
-      ]
-    }],
-    "references": [{
-      "name": "Jane Doe",
-      "reference": "Reference…"
-    }],
+    "interests": [],
+    "references": [],
     "projects": [
       {
         "name": "mars.codes",

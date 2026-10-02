@@ -1,7 +1,57 @@
 ---
 import Section from "@/components/Section.astro"
+import { education } from "@cv"
+import { PRESENT_LABEL, getYear } from "@/lib/dates"
 ---
 
-<Section title="Education">
+{education.length > 0 && (
+    <Section id="educacion" title="Educación">
+        <ul class="studies">
+            {education.map(({ institution, url, area, studyType, startDate, endDate }) => (
+                <li>
+                    <article>
+                        <header>
+                            <h3>
+                                {url
+                                    ? <a href={url} title={`Ver ${institution}`} target="_blank" rel="noopener noreferrer">{institution}</a>
+                                    : institution}
+                            </h3>
+                            <p class="dates">
+                                <time datetime={startDate}>{getYear(startDate)}</time>
+                                {" - "}
+                                {endDate ? <time datetime={endDate}>{getYear(endDate)}</time> : PRESENT_LABEL}
+                            </p>
+                        </header>
+                        <p>{studyType ? `${area} (${studyType})` : area}</p>
+                    </article>
+                </li>
+            ))}
+        </ul>
+    </Section>
+)}
 
-</Section>
+<style>
+    .studies{
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+    article h3{
+        font-weight: 500;
+    }
+    article h3 a:hover{
+        text-decoration: underline;
+    }
+    header{
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 4px;
+    }
+    .dates{
+        flex-shrink: 0;
+        font-size: 0.85rem;
+        color: var(--color-faint);
+    }
+</style>

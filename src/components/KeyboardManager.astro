@@ -1,9 +1,391 @@
-<footer>
+---
+import { basics } from "@cv"
+import { CV_PDF_FILENAME, CV_PDF_URL } from "@/lib/cv-download"
+import Command from "@/icons/Command.astro"
+import Download from "@/icons/Download.astro"
+import Printer from "@/icons/Printer.astro"
+import Mail from "@/icons/Mail.astro"
+import Phone from "@/icons/Phone.astro"
+import GitHub from "@/icons/GitHub.astro"
+import LinkedIn from "@/icons/LinkedIn.astro"
+import X from "@/icons/X.astro"
 
+interface PaletteCommand {
+    id: string
+    title: string
+    icon?: any
+    href?: string
+    download?: string
+    external?: boolean
+    action?: "print"
+}
+
+const { email, phone, profiles } = basics
+
+const SOCIAL_ICONS: Record<string, any> = { GitHub, LinkedIn, X }
+
+const actions: PaletteCommand[] = [
+    { id: "download-cv", title: "Descargar CV (PDF)", icon: Download, href: CV_PDF_URL, download: CV_PDF_FILENAME },
+    { id: "print", title: "Imprimir", icon: Printer, action: "print" },
+]
+if (email) actions.push({ id: "email", title: "Enviar un correo", icon: Mail, href: `mailto:${email}` })
+if (phone) actions.push({ id: "phone", title: "Llamar por teléfono", icon: Phone, href: `tel:${phone.replace(/[^\d+]/g, "")}` })
+
+const social: PaletteCommand[] = profiles.map(({ network, url }) => ({
+    id: `social-${network.toLowerCase()}`,
+    title: `Visitar ${network}`,
+    icon: SOCIAL_ICONS[network],
+    href: url,
+    external: true,
+}))
+
+const groups = [
+    { id: "acciones", title: "Acciones", commands: actions },
+    { id: "social", title: "Social", commands: social },
+].filter(({ commands }) => commands.length > 0)
+---
+
+<footer class="hint no-print">
+    <button type="button" data-open-palette aria-haspopup="dialog" aria-controls="command-palette">
+        Pulsa <kbd data-mod-key>Ctrl</kbd> + <kbd>K</kbd> para abrir la paleta de comandos
+    </button>
 </footer>
-<script>
 
+<button
+    type="button"
+    class="floating-trigger no-print"
+    data-open-palette
+    aria-haspopup="dialog"
+    aria-controls="command-palette"
+    aria-label="Abrir la paleta de comandos"
+>
+    <Command />
+</button>
+
+<dialog id="command-palette" class="palette no-print" aria-label="Paleta de comandos">
+    <div class="panel">
+        <input
+            type="text"
+            role="combobox"
+            aria-label="Buscar comando"
+            aria-expanded="true"
+            aria-controls="command-list"
+            aria-autocomplete="list"
+            placeholder="Buscar comando"
+            autocomplete="off"
+            spellcheck="false"
+            data-palette-input
+        />
+        <div id="command-list" class="list" role="listbox" aria-label="Comandos">
+            {groups.map(({ id, title, commands }) => (
+                <div role="group" aria-labelledby={`group-${id}`} data-palette-group>
+                    <p role="presentation" id={`group-${id}`} class="group-title">{title}</p>
+                    {commands.map(({ id, title, icon: Icon, href, download, external, action }) => (
+                        <div
+                            role="option"
+                            id={`command-${id}`}
+                            aria-selected="false"
+                            class="option"
+                            data-palette-option
+                            data-href={href}
+                            data-download={download}
+                            data-external={external ? "" : undefined}
+                            data-action={action}
+                        >
+                            {Icon && <Icon />}
+                            <span>{title}</span>
+                        </div>
+                    ))}
+                </div>
+            ))}
+            <p class="empty" hidden data-palette-empty>No se encontraron comandos</p>
+        </div>
+        <p class="shortcuts" aria-hidden="true">
+            <span><kbd>↑</kbd><kbd>↓</kbd> navegar</span>
+            <span><kbd>↵</kbd> seleccionar</span>
+            <span><kbd>Esc</kbd> cerrar</span>
+        </p>
+    </div>
+</dialog>
+
+<script>
+    const dialog = document.querySelector<HTMLDialogElement>("#command-palette")
+    const input = dialog?.querySelector<HTMLInputElement>("[data-palette-input]")
+
+    if (dialog && input) {
+        const options = [...dialog.querySelectorAll<HTMLElement>("[data-palette-option]")]
+        const groups = [...dialog.querySelectorAll<HTMLElement>("[data-palette-group]")]
+        const empty = dialog.querySelector<HTMLElement>("[data-palette-empty]")
+        let activeIndex = 0
+
+        const isMac = /Mac|iPhone|iPad/i.test(navigator.userAgent)
+        document.querySelectorAll("[data-mod-key]").forEach((key) => {
+            key.textContent = isMac ? "⌘" : "Ctrl"
+        })
+
+        const normalize = (text: string) =>
+            text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim()
+
+        const visibleOptions = () => options.filter((option) => !option.hidden)
+
+        const setActive = (index: number) => {
+            const visible = visibleOptions()
+            options.forEach((option) => option.setAttribute("aria-selected", "false"))
+
+            if (visible.length === 0) {
+                input.removeAttribute("aria-activedescendant")
+                return
+            }
+
+            activeIndex = (index + visible.length) % visible.length
+            const active = visible[activeIndex]
+            active.setAttribute("aria-selected", "true")
+            input.setAttribute("aria-activedescendant", active.id)
+            active.scrollIntoView({ block: "nearest" })
+        }
+
+        const filter = (query: string) => {
+            const search = normalize(query)
+            options.forEach((option) => {
+                option.hidden = !normalize(option.textContent ?? "").includes(search)
+            })
+            groups.forEach((group) => {
+                group.hidden = !group.querySelector("[data-palette-option]:not([hidden])")
+            })
+            if (empty) empty.hidden = visibleOptions().length > 0
+            setActive(0)
+        }
+
+        const open = () => {
+            if (dialog.open) return
+            input.value = ""
+            filter("")
+            dialog.showModal()
+            input.focus()
+        }
+
+        const run = (option: HTMLElement) => {
+            const { href, download, external, action } = option.dataset
+            dialog.close()
+
+            if (action === "print") {
+                // Esperamos a que el diálogo desaparezca para que no salga en la impresión.
+                requestAnimationFrame(() => window.print())
+                return
+            }
+
+            if (href) {
+                const link = document.createElement("a")
+                link.href = href
+                if (download) link.download = download
+                if (external !== undefined) {
+                    link.target = "_blank"
+                    link.rel = "noopener noreferrer"
+                }
+                link.click()
+            }
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+                event.preventDefault()
+                if (dialog.open) dialog.close()
+                else open()
+            }
+        })
+
+        input.addEventListener("input", () => filter(input.value))
+
+        input.addEventListener("keydown", (event) => {
+            const visible = visibleOptions()
+            if (event.key === "ArrowDown") {
+                event.preventDefault()
+                setActive(activeIndex + 1)
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault()
+                setActive(activeIndex - 1)
+            } else if (event.key === "Home") {
+                event.preventDefault()
+                setActive(0)
+            } else if (event.key === "End") {
+                event.preventDefault()
+                setActive(visible.length - 1)
+            } else if (event.key === "Enter" && visible[activeIndex]) {
+                event.preventDefault()
+                run(visible[activeIndex])
+            }
+        })
+
+        options.forEach((option) => {
+            option.addEventListener("click", () => run(option))
+            option.addEventListener("pointermove", () => {
+                const index = visibleOptions().indexOf(option)
+                if (index !== activeIndex) setActive(index)
+            })
+        })
+
+        // Cerrar al hacer clic en el fondo (fuera del panel).
+        dialog.addEventListener("click", (event) => {
+            if (event.target === dialog) dialog.close()
+        })
+
+        document.querySelectorAll("[data-open-palette]").forEach((button) => {
+            button.addEventListener("click", open)
+        })
+    }
 </script>
+
 <style>
-    
+    .hint{
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+    }
+    .hint button{
+        width: 100%;
+        padding-block: 8px;
+        border: 0;
+        background: none;
+        color: var(--color-muted);
+        font: inherit;
+        font-size: .85rem;
+        cursor: pointer;
+    }
+    .hint button:hover{
+        color: var(--color-text);
+    }
+    .floating-trigger{
+        display: none;
+        position: fixed;
+        right: 12px;
+        bottom: 12px;
+        width: 52px;
+        height: 52px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--color-border);
+        border-radius: 50%;
+        background: var(--color-bg);
+        color: var(--color-faint);
+        box-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
+        cursor: pointer;
+    }
+    :global(body){
+        padding-bottom: 2.5rem;
+    }
+    @media (width <= 600px){
+        .hint{
+            display: none;
+        }
+        .floating-trigger{
+            display: flex;
+        }
+        :global(body){
+            padding-bottom: 4.5rem;
+        }
+    }
+    @media print{
+        :global(body){
+            padding-bottom: 0;
+        }
+    }
+
+    .palette{
+        width: min(560px, calc(100% - 32px));
+        max-height: min(480px, calc(100dvh - 32px));
+        margin: 12vh auto auto;
+        padding: 0;
+        border: 1px solid var(--color-border-strong);
+        border-radius: 12px;
+        background: var(--color-bg);
+        color: var(--color-text);
+        box-shadow: 0 16px 48px rgb(0 0 0 / 0.18);
+        overflow: hidden;
+    }
+    .palette[open]{
+        animation: pop .15s ease-out;
+    }
+    .palette::backdrop{
+        background: var(--color-backdrop);
+        backdrop-filter: blur(2px);
+    }
+    .panel{
+        display: flex;
+        flex-direction: column;
+        max-height: inherit;
+    }
+    input{
+        width: 100%;
+        padding: 16px;
+        border: 0;
+        border-bottom: 1px solid var(--color-border);
+        background: transparent;
+        color: var(--color-text);
+        font: inherit;
+        font-size: 1rem;
+    }
+    input:focus-visible{
+        outline: none;
+    }
+    input::placeholder{
+        color: var(--color-faint);
+    }
+    .list{
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px;
+    }
+    .group-title{
+        padding: 8px 8px 4px;
+        color: var(--color-faint);
+        font-size: .75rem;
+    }
+    .option{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 8px;
+        border-radius: 8px;
+        border-left: 2px solid transparent;
+        color: var(--color-subtitle);
+        font-size: .9rem;
+        cursor: pointer;
+    }
+    .option[hidden]{
+        display: none;
+    }
+    .option[aria-selected="true"]{
+        background: var(--color-chip);
+        border-left-color: var(--color-text);
+        color: var(--color-text);
+    }
+    .empty{
+        padding: 16px 8px;
+        text-align: center;
+    }
+    .shortcuts{
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        padding: 10px 16px;
+        border-top: 1px solid var(--color-border);
+        font-size: .75rem;
+    }
+    .shortcuts kbd + kbd{
+        margin-left: 2px;
+    }
+    @keyframes pop{
+        from{
+            opacity: 0;
+            transform: scale(.98);
+        }
+    }
+    @media (width <= 600px){
+        .shortcuts{
+            display: none;
+        }
+    }
 </style>

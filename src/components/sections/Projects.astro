@@ -1,88 +1,136 @@
 ---
 import Section from "@/components/Section.astro"
+import GitHub from "@/icons/GitHub.astro"
 import { projects } from "@cv"
 ---
 
-<Section title="Proyectos">
-
-    <ul>
+<Section id="proyectos" title="Proyectos">
+    <ul class="projects">
         {
-            projects.map(({url, description, highlights, name,isActive}) =>[
+            projects.map(({url, description, highlights, name, isActive, github}) => (
                 <li>
                     <article>
                         <header>
-                            <a href={url} title={`Ver el proyecto ${name}`}>
-                                <h3>{name}</h3>
-                            </a>
+                            <h3>
+                                {url
+                                    ? <a href={url} title={`Ver el proyecto ${name}`} target="_blank" rel="noopener noreferrer">{name}</a>
+                                    : name}
+                                {isActive && (
+                                    <span class="status" title="Proyecto activo">
+                                        <span aria-hidden="true">•</span>
+                                        <span class="visually-hidden">(activo)</span>
+                                    </span>
+                                )}
+                                {github && (
+                                    <a class="github-code-link"
+                                        href={github}
+                                        title={`Ver el código fuente del proyecto ${name}`}
+                                        aria-label={`Código fuente de ${name} en GitHub (se abre en una pestaña nueva)`}
+                                        target="_blank"
+                                        rel="noopener noreferrer">
+                                        <GitHub />
+                                    </a>
+                                )}
+                            </h3>
                             <p>{description}</p>
                         </header>
-                        <footer>
-                            
-                                {highlights.map((highlight) => <span>{highlight}</span>)}
-                            
-                        </footer>
+                        {highlights.length > 0 && (
+                            <ul class="tags">
+                                {highlights.map((highlight) => <li>{highlight}</li>)}
+                            </ul>
+                        )}
                     </article>
                 </li>
-            ])
+            ))
         }
     </ul>
 </Section>
 
 <style>
-    ul{
+    .projects{
         display: grid;
         grid-template-columns: repeat(
             auto-fit,
             minmax(200px, 1fr)
         );
         gap: 1rem;
+        margin-inline: -16px;
     }
     article{
         border-radius: 8px;
-        border 1px solid #f2f2f2;
+        border: 1px solid var(--color-border);
         gap: 16px;
         display: flex;
         flex-direction: column;
         padding: 16px;
         height: 100%;
-
     }
     article header{
         flex: 1;
-
     }
     article h3{
-
-    }
-    article a{
-        color: #111;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 4px;
     }
     article a:hover{
-        text-decoration:  underline;
-
+        text-decoration: underline;
     }
     article p{
         font-size: .75rem;
-        line-height: 1.1rem;
-        margin-bottom: 8px;
+        line-height: 1.2rem;
     }
-    footer{
+    .status{
+        color: var(--color-accent);
+        animation: flicker 3s ease-in infinite;
+    }
+    .github-code-link{
+        display: inline-flex;
+        color: var(--color-faint);
+    }
+    .github-code-link:hover{
+        color: var(--color-text);
+    }
+    .tags{
         display: flex;
         flex-wrap: wrap;
         gap: 4px;
-        font-size: 0.8rem;
     }
-
-    footer span{
+    .tags li{
         border-radius: 6px;
-        background: #eee;
-        color: #444;
-        font-size: .6rem;
+        background: var(--color-chip);
+        color: var(--color-chip-text);
+        font-size: .65rem;
         font-weight: 500;
+        line-height: 1.4;
         padding: 0.2rem 0.6rem;
-
     }
-
-    
-
+    @keyframes flicker{
+        0%{
+            opacity: 1;
+        }
+        50%{
+            opacity: .25;
+        }
+        100%{
+            opacity: 1;
+        }
+    }
+    @media (width <= 700px){
+        .projects{
+            margin-inline: 0;
+        }
+        article{
+            border: none;
+            border-bottom: 1px solid var(--color-border);
+            border-radius: 0;
+            padding: 0 0 16px 0;
+        }
+    }
+    @media print{
+        .status{
+            animation: none;
+        }
+    }
 </style>

@@ -7,58 +7,89 @@ import GitHub from '@/icons/GitHub.astro'
 import X from '@/icons/X.astro'
 import LinkedIn from '@/icons/LinkedIn.astro'
 import WorldMap from '@/icons/WorldMap.astro'
-const {name,label, image, location, profiles, phone, email} = basics
+import Download from '@/icons/Download.astro'
+import { avatar, initials } from '@/lib/avatar'
+import { CV_PDF_FILENAME, CV_PDF_URL } from '@/lib/cv-download'
+
+const {name,label, location, profiles, phone, email} = basics
 const {city,region} = location
 const SOCIAL_ICONS :Record<string, any> ={
     GitHub,
     LinkedIn,
     X
 }
+
+// Versión en texto plano de los datos de contacto para la versión impresa.
+const printInfo = [email, phone, ...profiles.map(({url}) => url)].filter(Boolean).join(' • ')
 ---
 
 <Section>
     <div class="container">
         <div class="info">
             <h1>{name}</h1>
-            <h2>{label}</h2>
-            <span>
+            <p class="label">{label}</p>
+            <p class="location">
                 <WorldMap />
-                {city}, {region}
-            </span>
-            <footer>
-                {
-                    email && (
-                        <a href={`mailto:${email}`}
-                            title={`Enviar un correo electronico a ${name} al correo ${email}`}
-                            target="_blank"
-                            rel="noopener noreferrer" >
-                            <Mail />
-                            </a>
-                    )
-                }
-                {
-                    phone && (
-                        <a href={`tel:${phone}`}
-                            title={`Llamar por telefono a ${name} al numero ${phone}`}
-                            target="_blank"
-                            rel="noopener noreferrer" >
-                            <Phone />
-                            </a>
-                    )
-                }{
-                    profiles.map(({network,url,username}) =>{
-                        const Icon = SOCIAL_ICONS[network]
-                        return(
-                            <a href={url}>
-                                <Icon />
-                            </a>
+                {[city, region].filter(Boolean).join(', ')}
+            </p>
+            <p class="print">{printInfo}</p>
+            <div class="actions no-print">
+                <ul class="contact" aria-label="Contacto y redes sociales">
+                    {
+                        email && (
+                            <li>
+                                <a href={`mailto:${email}`}
+                                    aria-label={`Enviar un correo electrónico a ${email}`}
+                                    title={`Enviar un correo electrónico a ${name} al correo ${email}`}>
+                                    <Mail />
+                                </a>
+                            </li>
                         )
-                    })
-                }
-            </footer>
+                    }
+                    {
+                        phone && (
+                            <li>
+                                <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}
+                                    aria-label={`Llamar al ${phone}`}
+                                    title={`Llamar por teléfono a ${name} al número ${phone}`}>
+                                    <Phone />
+                                </a>
+                            </li>
+                        )
+                    }
+                    {
+                        profiles.map(({network,url}) =>{
+                            const Icon = SOCIAL_ICONS[network]
+                            return(
+                                <li>
+                                    <a href={url}
+                                        aria-label={`Perfil de ${network} (se abre en una pestaña nueva)`}
+                                        title={`Visitar el perfil de ${name} en ${network}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer">
+                                        {Icon ? <Icon /> : <span class="network">{network}</span>}
+                                    </a>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+                <a class="download"
+                    href={CV_PDF_URL}
+                    download={CV_PDF_FILENAME}
+                    type="application/pdf"
+                    title="Descargar el CV en PDF optimizado para ATS">
+                    <Download />
+                    Descargar CV
+                </a>
+            </div>
         </div>
         <figure>
-            <img src={image} alt={name} />
+            {
+                avatar
+                    ? <img src={avatar} alt={`Foto de ${name}`} width="128" height="128" />
+                    : <div class="avatar-fallback" aria-hidden="true">{initials}</div>
+            }
         </figure>
     </div>
 </Section>
@@ -69,55 +100,111 @@ const SOCIAL_ICONS :Record<string, any> ={
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 1rem;        
+        gap: 1rem;
     }
     .info{
         display: flex;
         flex-direction: column;
+        gap: 0.5rem;
         padding-right: 32px;
     }
     h1{
         font-size: 2rem;
+        line-height: 1.2;
     }
-    h2{
-        color: #444;
+    .label{
+        color: var(--color-subtitle);
+        font-family: var(--font-sans);
         font-weight: 500;
         font-size: 1.1rem;
+        line-height: 1.4;
         text-wrap: balance;
     }
-    img{
+    img,
+    .avatar-fallback{
         aspect-ratio: 1 / 1;
-        object-fit: cover;
         width: 128px;
+        height: auto;
         border-radius: 16px;
     }
-    span{
-        color: #666;
+    img{
+        object-fit: cover;
+    }
+    .avatar-fallback{
+        display: grid;
+        place-items: center;
+        background: var(--color-chip);
+        color: var(--color-subtitle);
+        font-family: var(--font-sans);
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+    .location{
         display: flex;
         align-items: center;
         gap: .25rem;
         font-size: .85rem;
         letter-spacing: -0.05rem;
     }
-    footer{
+    .print{
+        font-size: .75rem;
+    }
+    .actions{
         display: flex;
-        gap: 4px;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
         margin-top: 8px;
     }
-    footer a{
-        color: #777;
+    .contact{
+        display: flex;
+        gap: 4px;
+    }
+    .contact a,
+    .download{
+        color: var(--color-faint);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #eee;
-        padding: 4px;
+        border: 1px solid var(--color-border);
         height: 32px;
-        width: 32px;
         border-radius: 6px;
-        transition: all .3s ease;
+        transition: background .3s ease, border-color .3s ease, color .3s ease;
     }
-    footer a:hover{
-        background: #eee;
-        border: 1px solid #ddd;
+    .contact a{
+        width: 32px;
+        padding: 4px;
+    }
+    .network{
+        font-size: .6rem;
+    }
+    .download{
+        gap: 6px;
+        padding: 0 10px;
+        color: var(--color-text);
+        font-size: .8rem;
+        font-weight: 600;
+    }
+    .contact a:hover,
+    .download:hover{
+        background: var(--color-chip);
+        border-color: var(--color-border-strong);
+        color: var(--color-text);
+    }
+    @media (width <= 700px){
+        .container{
+            flex-direction: column-reverse;
+        }
+        .info{
+            align-items: center;
+            padding-right: 0;
+            text-align: center;
+        }
+        .actions{
+            justify-content: center;
+        }
+        figure{
+            margin: 0 auto;
+        }
     }
 </style>

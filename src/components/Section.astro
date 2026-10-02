@@ -1,9 +1,15 @@
 ---
-const {title} = Astro.props
+interface Props {
+    id?: string
+    title?: string
+}
+
+const { id, title } = Astro.props
+const headingId = id && title ? `${id}-title` : undefined
 ---
 
-<section>
-    {title && <h2>{title}</h2>}
+<section id={id} aria-labelledby={headingId}>
+    {title && <h2 id={headingId}>{title}</h2>}
     <slot />
 </section>
 
@@ -17,5 +23,10 @@ const {title} = Astro.props
         font-weight: 700;
         line-height: 1.5;
         font-size: 1.5rem;
+    }
+    @media (width <= 700px){
+        section{
+            margin-bottom: 38px;
+        }
     }
 </style>
