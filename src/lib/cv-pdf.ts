@@ -1,5 +1,5 @@
 import PDFDocument from "pdfkit"
-import type { CV } from "@/types/cv"
+import type { CV, DateString } from "@/types/cv"
 import { formatMonthYear, formatMonthYearRange } from "@/lib/dates"
 
 /*
@@ -39,6 +39,9 @@ const BULLET_INDENT = 12
 const SEPARATOR = " | "
 
 const stripProtocol = (url: string) => url.replace(/^(https?:\/\/)?(www\.)?/, "").replace(/\/$/, "")
+
+// Certificados, premios y publicaciones pueden no tener fecha (es opcional en JSON Resume).
+const formatOptionalDate = (date?: DateString) => (date ? formatMonthYear(date) : "")
 
 const linkSegments = (url?: string): Segment[] => (url ? [{ text: stripProtocol(url), link: url }] : [])
 
@@ -270,7 +273,7 @@ function renderCv(doc: Doc, cv: CV) {
       for (const certificate of certificates) {
         entry(doc, sect, {
           title: [{ text: certificate.name, bold: true }],
-          subtitle: [certificate.issuer, formatMonthYear(certificate.date)].join(SEPARATOR),
+          subtitle: [certificate.issuer, formatOptionalDate(certificate.date)].filter(Boolean).join(SEPARATOR),
           notes: linkSegments(certificate.url),
         })
       }
@@ -282,7 +285,7 @@ function renderCv(doc: Doc, cv: CV) {
       for (const award of awards) {
         entry(doc, sect, {
           title: [{ text: award.title, bold: true }],
-          subtitle: [award.awarder, formatMonthYear(award.date)].join(SEPARATOR),
+          subtitle: [award.awarder, formatOptionalDate(award.date)].filter(Boolean).join(SEPARATOR),
           summary: award.summary,
         })
       }
@@ -294,7 +297,9 @@ function renderCv(doc: Doc, cv: CV) {
       for (const publication of publications) {
         entry(doc, sect, {
           title: [{ text: publication.name, bold: true }],
-          subtitle: [publication.publisher, formatMonthYear(publication.releaseDate)].join(SEPARATOR),
+          subtitle: [publication.publisher, formatOptionalDate(publication.releaseDate)]
+            .filter(Boolean)
+            .join(SEPARATOR),
           summary: publication.summary,
           notes: linkSegments(publication.url),
         })

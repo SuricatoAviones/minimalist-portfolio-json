@@ -65,14 +65,14 @@ export interface Education {
 
 export interface Award {
   title: string
-  date: DateString
+  date?: DateString
   awarder: string
   summary?: string
 }
 
 export interface Certificate {
   name: string
-  date: DateString
+  date?: DateString
   issuer: string
   url?: string
 }
@@ -80,7 +80,7 @@ export interface Certificate {
 export interface Publication {
   name: string
   publisher: string
-  releaseDate: DateString
+  releaseDate?: DateString
   url?: string
   summary?: string
 }
