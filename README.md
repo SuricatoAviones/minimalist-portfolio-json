@@ -12,13 +12,13 @@ Basado en [midudev/minimalist-portfolio-json](https://github.com/midudev/minimal
 - **Modo claro y oscuro** automático según el sistema.
 - **Versión imprimible**: al imprimir se ocultan los controles y se muestran los datos de contacto en texto.
 - **Accesible**: HTML semántico, navegación por teclado, etiquetas ARIA y sin violaciones en [axe](https://github.com/dequelabs/axe-core) (WCAG 2.2 AA).
-- **SEO**: metadatos Open Graph/Twitter, URL canónica y datos estructurados `schema.org/Person`.
+- **SEO**: metadatos Open Graph/Twitter (con una copia JPEG de tu foto para las vistas previas), URL canónica y datos estructurados `schema.org/Person`.
 - **Responsive** y 100 % estático (sin JavaScript salvo la paleta de comandos).
 
 ## 🧰 Tecnologías
 
 - [Astro 4](https://docs.astro.build) + TypeScript (modo `strict`)
-- [PDFKit](https://pdfkit.org) para generar el PDF en tiempo de build
+- [PDFKit](https://pdfkit.org) para generar el PDF y [sharp](https://sharp.pixelplumbing.com) para la imagen de vista previa, ambos en tiempo de build
 - [pnpm](https://pnpm.io) como gestor de paquetes
 
 ## 🚀 Empezar
@@ -35,7 +35,7 @@ Abre `http://localhost:4321`. El PDF está disponible en `http://localhost:4321/
 ## ✏️ Personalizar
 
 1. Edita **`cv.json`** con tus datos. Sigue el esquema de JSON Resume; los tipos están en `src/types/cv.ts` y `pnpm check` avisa si falta algún campo obligatorio.
-2. Añade tu foto como **`public/me.webp`** (o cambia `basics.image`). Si no existe, se muestran tus iniciales.
+2. Añade tu foto en **`public/`** y apunta a ella en `basics.image` (por defecto `/me.avif`; vale AVIF, WebP, JPG o PNG). Si no existe, se muestran tus iniciales. Al compilar se genera `og-image.jpg` para las vistas previas en redes sociales, que no siempre admiten AVIF.
 3. Si publicas el sitio en un dominio, configura `site` en `astro.config.mjs` para generar la URL canónica correcta (si no, se usa `basics.url`).
 
 | Sección de `cv.json`                                                | Web | PDF |
@@ -86,7 +86,7 @@ Para comprobar cómo lo «lee» un ATS puedes extraer el texto, por ejemplo con 
     │   ├── cv-pdf.ts        # Generador del PDF compatible con ATS
     │   ├── cv-download.ts   # Ruta y nombre del archivo PDF
     │   ├── dates.ts         # Formato de fechas
-    │   └── avatar.ts        # Foto de perfil o iniciales
+    │   └── avatar.ts        # Foto de perfil, iniciales e imagen social
     ├── components/
     │   ├── KeyboardManager.astro  # Paleta de comandos (Ctrl/⌘ + K)
     │   ├── Section.astro
@@ -95,7 +95,8 @@ Para comprobar cómo lo «lee» un ATS puedes extraer el texto, por ejemplo con 
     ├── layouts/Layout.astro # HTML base, SEO, tema y estilos globales
     └── pages/
         ├── index.astro      # Portafolio
-        └── cv.pdf.ts        # Endpoint del CV en PDF
+        ├── cv.pdf.ts        # Endpoint del CV en PDF
+        └── [image].jpg.ts   # Copia JPEG de la foto para Open Graph
 ```
 
 ## 🌍 Despliegue

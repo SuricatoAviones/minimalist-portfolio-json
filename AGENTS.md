@@ -37,7 +37,7 @@ cv.json ──► src/cv.ts (alias @cv, tipado con src/types/cv.ts)
 - `@/*` apunta a `src/*`.
 - `src/lib/dates.ts`: formatea fechas parseando el texto (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). **No uses `new Date()`** con fechas del CV: provoca desfases de zona horaria.
 - `src/lib/cv-download.ts`: ruta (`/cv.pdf`) y nombre del archivo descargable. Reutilízalo en lugar de escribir la ruta a mano.
-- `src/lib/avatar.ts`: usa la foto de `basics.image` solo si existe en `public/`; si no, iniciales.
+- `src/lib/avatar.ts`: usa la foto de `basics.image` solo si existe en `public/`; si no, iniciales. `src/pages/[image].jpg.ts` genera con sharp `/og-image.jpg` (las redes sociales no siempre admiten AVIF) para `og:image`/`twitter:image`.
 - `src/components/KeyboardManager.astro`: paleta de comandos con `<dialog>` nativo y patrón combobox + listbox. Sin dependencias.
 - `src/layouts/Layout.astro`: SEO, JSON-LD, estilos globales y **tokens de color** (`--color-*`) con tema claro/oscuro.
 
