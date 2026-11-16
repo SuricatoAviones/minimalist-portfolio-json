@@ -1,12 +1,12 @@
 {
   "basics": {
     "name": "Luis Angel Gutierrez Bonillo",
-    "label": "Desarrollador Full Stack | Medios de Pago, APIs y Sistemas Transaccionales",
+    "label": "Software, Data & AI Engineer | Digital Transformation for Oil & Gas",
     "image": "/me.webp",
     "email": "luis.angel151199@gmail.com",
     "phone": "+58 414 8600062",
     "url": "https://luisangelgutierrez.com",
-    "summary": "Desarrollador Full Stack con más de 4 años de experiencia y trayectoria en medios de pago: desarrollé en C# y .NET el sistema Central de Cajeros NDC, procesando transacciones financieras en tiempo real bajo el estándar ISO 8583, con módulos de encriptación y simuladores de ATM y switches transaccionales. Construyo APIs RESTful con Node.js (NestJS, Express) sobre PostgreSQL y SQL Server, y frontends con React y Angular. Experiencia en autenticación y autorización (JWT, LDAP, roles), integración de pasarelas de pago, despliegues con Docker en Linux y Windows Server, y pruebas con Jest. Con base en Java; interesado en profundizar en Spring Boot y microservicios dentro del ecosistema de pagos de Suiche 7B.",
+    "summary": "Systems Engineer with over 4 years of experience building enterprise software, data solutions and AI, with a focus on the oil industry. For PDVSA (Petrodelta and ESEM) I developed document management and project portfolio systems with roles, costs, tracking and automated reports, deployed on-premise. I created PetroAtlas, an open source oil well explorer with a map, production and pressure series, LAS logs, Arps decline, IPR, PVT and Chan diagnostics, and published its calculation library on npm with over 90% coverage. I design applied AI solutions (RAG, agents, on-premise LLMs) and have trained staff at oil companies in AI and data analysis with R. Currently pursuing a Master's degree in Management Informatics with research on local AI for decision-making. Available for on-site work in eastern Venezuela or remote.",
     "location": {
       "address": "",
       "postalCode": "6201",
@@ -29,82 +29,82 @@
   },
   "work": [
     {
-      "name": "EFT Solutions",
-      "position": "Desarrollador de Software – Medios de Pago (ISO 8583)",
-      "url": "https://eft-solutions.com",
-      "startDate": "2024-08-01",
-      "endDate": "2025-08-01",
-      "summary": "Sistemas de misión crítica para procesamiento de transacciones financieras en tiempo real, con altos requerimientos de seguridad y disponibilidad.",
-      "highlights": [
-        "Desarrollé en C# y .NET el sistema Central de Cajeros NDC, que procesa mensajes de transacciones financieras en tiempo real bajo el estándar ISO 8583.",
-        "Construí simuladores de cajeros automáticos y de switches transaccionales para probar flujos de autorización, reverso y error antes de producción.",
-        "Implementé módulos de encriptación y un panel de control para pruebas y validación del sistema.",
-        "Desarrollé el portal institucional de la empresa con Astro y TailwindCSS."
-      ]
-    },
-    {
       "name": "TecnoSoluciones",
-      "position": "Desarrollador de Software e Integración de Sistemas (Remoto)",
+      "position": "Software Developer & Systems Integration (Remote)",
       "url": "https://tecnosoluciones.com",
       "startDate": "2025-03-01",
       "endDate": null,
-      "summary": "Integración de sistemas empresariales, automatización de procesos y soluciones de IA para clientes corporativos.",
+      "summary": "Enterprise systems integration, process automation and AI solutions for corporate clients.",
       "highlights": [
-        "Integré pasarelas de pago (ePayco) en plataformas de comercio electrónico con lógica de suscripciones.",
-        "Integré CRM y comercio electrónico con ERPs mediante APIs REST y SOAP, sincronizando productos, inventario y órdenes.",
-        "Diseñé un sistema de atención basado en RAG con n8n, QDrant y Google Gemini.",
-        "Desarrollé módulos de autenticación personalizados y extensiones a medida."
+        "Designed a RAG-based support system with n8n, QDrant and Google Gemini: intent classification, specialized agents, internal knowledge retrieval and handoff to a human.",
+        "Integrated CRM and e-commerce platforms with ERPs through REST and SOAP APIs, automating inventory, product and order management.",
+        "Developed modules and customizations on Dolibarr ERP for sales, purchasing and reporting processes.",
+        "Automated business workflows with n8n in sales, support and follow-up, reducing manual tasks and synchronization errors."
       ]
     },
     {
       "name": "Academos",
-      "position": "Instructor de IA, Análisis de Datos y Programación",
+      "position": "AI, Data Analysis and Programming Instructor",
       "url": "https://academos.com.ve",
       "startDate": "2024-02-01",
       "endDate": null,
-      "summary": "Capacitación técnica corporativa para empresas del sector petrolero e instructor de la red Cisco NetAcad.",
+      "summary": "Corporate technical training for companies in the oil sector and instructor for the Cisco NetAcad network.",
       "highlights": [
-        "Dicté cursos de optimización de procesos con Inteligencia Artificial para personal de empresas petroleras.",
-        "Dicté cursos de análisis de datos con R para empresas petroleras: manipulación, visualización y análisis estadístico de datos operativos.",
-        "Instructor Cisco NetAcad: JavaScript Essentials, HTML/CSS Essentials e Introducción al Análisis de Datos.",
-        "Desarrollé el portal institucional de Academos con Astro y TailwindCSS."
+        "Taught courses on process optimization with Artificial Intelligence for oil company staff, with cases applied to operational and administrative processes.",
+        "Taught data analysis courses with R for oil companies: data manipulation, visualization and statistical analysis of operational data.",
+        "Cisco NetAcad instructor: JavaScript Essentials, HTML/CSS Essentials and Introduction to Data Analysis.",
+        "Developed the Academos institutional portal with Astro and TailwindCSS, focused on performance and accessibility."
+      ]
+    },
+    {
+      "name": "EFT Solutions",
+      "position": "Software Developer – Critical and Real-Time Systems",
+      "url": "https://eft-solutions.com",
+      "startDate": "2024-08-01",
+      "endDate": "2025-08-01",
+      "summary": "Mission-critical systems for real-time transaction processing, with 24/7 availability, integrity and security requirements.",
+      "highlights": [
+        "Developed the NDC ATM Central in C# and .NET, processing ISO 8583 messages in real time: authorization, reversal, validation and error handling.",
+        "Built ATM and transaction switch simulators to test complete flows before production, reducing operational risk.",
+        "Implemented encryption modules and a testing panel for system validation and support.",
+        "Developed the company's institutional portal with Astro and TailwindCSS."
       ]
     },
     {
       "name": "DLocs",
-      "position": "Desarrollador Full Stack",
+      "position": "Full Stack Developer",
       "url": "https://dlocs.tech",
       "startDate": "2023-10-01",
       "endDate": "2024-02-01",
-      "summary": "Aplicaciones web y APIs para empresa con sede en Estados Unidos.",
+      "summary": "Web applications and APIs for a US-based company.",
       "highlights": [
-        "Construí APIs RESTful escalables con NestJS y Express sobre PostgreSQL.",
-        "Desarrollé frontends con React, Next.js y Vite, mejorando tiempos de carga.",
-        "Implementé autenticación y autorización para la protección de datos de usuarios."
-      ]
-    },
-    {
-      "name": "Piston Posición",
-      "position": "Desarrollador Front-End",
-      "url": "",
-      "startDate": "2020-01-01",
-      "endDate": "2020-12-01",
-      "summary": "Aplicaciones web con Angular, administración de servidores Ubuntu y bases de datos MySQL.",
-      "highlights": [
-        "Desarrollé aplicaciones web con Angular y Angular Material.",
-        "Diseñé bases de datos MySQL y administré servidores Ubuntu."
+        "Built RESTful APIs with Express.js and NestJS on PostgreSQL, with authentication and authorization.",
+        "Developed web applications with React and Next.js, improving load times.",
+        "Implemented authentication and authorization to protect user data."
       ]
     },
     {
       "name": "Centro Clínico La Pirámide",
-      "position": "Pasante de IT – Infraestructura y Soporte",
+      "position": "IT Intern – Infrastructure and Support",
       "url": "",
       "startDate": "2022-10-01",
       "endDate": "2022-12-01",
-      "summary": "Infraestructura de red y servidores para servicios críticos.",
+      "summary": "Network and server infrastructure for critical services.",
       "highlights": [
-        "Administré servidores Windows Server y la red, asegurando la continuidad de servicios críticos.",
-        "Brindé soporte técnico de hardware y software al personal."
+        "Administered Windows Server servers and the network, ensuring continuity of critical services.",
+        "Provided hardware and software technical support to staff."
+      ]
+    },
+    {
+      "name": "Piston Posición",
+      "position": "Front-End Developer",
+      "url": "",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-01",
+      "summary": "Web applications with Angular, Ubuntu server administration and MySQL databases.",
+      "highlights": [
+        "Developed web applications with Angular and Angular Material.",
+        "Designed MySQL databases and administered Ubuntu servers."
       ]
     }
   ],
@@ -113,20 +113,20 @@
     {
       "institution": "Universidad de Oriente",
       "url": "https://www.udo.edu.ve",
-      "area": "Magíster en Informática Gerencial",
-      "studyType": "En curso",
+      "area": "Master's in Management Informatics",
+      "studyType": "In progress",
       "startDate": "2025-10-01",
       "endDate": null,
       "score": "",
       "courses": [
-        "Investigación: sistemas de IA desplegados localmente para el soporte a decisiones gerenciales"
+        "Research: locally deployed AI systems to support management decision-making"
       ]
     },
     {
       "institution": "Universidad de Oriente",
       "url": "https://www.udo.edu.ve",
-      "area": "Ingeniería de Sistemas",
-      "studyType": "Ingeniero",
+      "area": "Systems Engineering",
+      "studyType": "Engineer",
       "startDate": "2017-03-01",
       "endDate": "2023-08-01",
       "score": "",
@@ -136,139 +136,216 @@
   "awards": [],
   "certificates": [
     {
+      "name": "Networking Essentials",
+      "issuer": "Cisco Networking Academy"
+    },
+    {
       "name": "Foundational C# with Microsoft",
       "issuer": "freeCodeCamp"
     },
     {
-      "name": "Networking Essentials",
-      "issuer": "Cisco Networking Academy"
+      "name": "Universidad Excel – Basic, Intermediate and Advanced",
+      "issuer": "Udemy"
+    },
+    {
+      "name": "Technical Support",
+      "issuer": "Capedsia"
     }
   ],
   "publications": [],
   "skills": [
     {
-      "name": "Medios de pago y seguridad transaccional",
-      "level": "Avanzado",
+      "name": "Well data and Oil & Gas domain",
+      "level": "Intermediate",
       "keywords": [
-        "ISO 8583",
-        "Switches transaccionales",
-        "Cajeros automáticos (ATM)",
-        "Pasarelas de pago",
-        "Encriptación"
+        "Production and pressure series",
+        "Arps decline and EUR",
+        "Vogel IPR and Standing PVT",
+        "Chan diagnostics",
+        "LAS logs",
+        "Geospatial data",
+        "Technical visualization"
       ]
     },
     {
-      "name": "Backend",
-      "level": "Avanzado",
+      "name": "Applied AI",
+      "level": "Advanced",
       "keywords": [
+        "LLMs",
+        "RAG",
+        "AI agents",
+        "On-premise AI",
+        "Google Gemini",
+        "Qdrant",
+        "n8n"
+      ]
+    },
+    {
+      "name": "Data analysis",
+      "level": "Advanced",
+      "keywords": [
+        "Python",
+        "R",
+        "SQL",
+        "Time series",
+        "Applied statistics",
+        "Data visualization",
+        "Advanced Excel"
+      ]
+    },
+    {
+      "name": "Backend development",
+      "level": "Advanced",
+      "keywords": [
+        "TypeScript",
         "Node.js",
         "NestJS",
         "Express",
-        "TypeScript",
         "C#",
         ".NET",
-        "Java",
-        "APIs RESTful"
+        "PHP",
+        "REST/SOAP APIs"
       ]
     },
     {
-      "name": "Frontend",
-      "level": "Avanzado",
+      "name": "Frontend and visualization",
+      "level": "Advanced",
       "keywords": [
         "React",
-        "Angular",
         "Next.js",
-        "TypeScript",
-        "TailwindCSS"
+        "Angular",
+        "Astro",
+        "TailwindCSS",
+        "ECharts",
+        "MapLibre GL"
       ]
     },
     {
-      "name": "Bases de datos",
-      "level": "Avanzado",
+      "name": "Databases",
+      "level": "Advanced",
       "keywords": [
         "PostgreSQL",
+        "PostGIS",
         "SQL Server",
         "MySQL",
-        "Modelado relacional",
         "Prisma",
-        "TypeORM"
+        "TypeORM",
+        "IndexedDB"
       ]
     },
     {
-      "name": "Seguridad",
-      "level": "Avanzado",
-      "keywords": [
-        "JWT",
-        "LDAP",
-        "Control de acceso por roles",
-        "Validación estricta de entradas"
-      ]
-    },
-    {
-      "name": "Infraestructura",
-      "level": "Avanzado",
+      "name": "Infrastructure and DevOps",
+      "level": "Advanced",
       "keywords": [
         "Docker",
+        "Docker Compose",
         "Linux",
         "Windows Server",
         "IIS",
-        "Proxmox VE"
+        "Proxmox VE",
+        "Dokploy",
+        "GitHub Actions",
+        "Render"
       ]
     },
     {
-      "name": "Calidad",
-      "level": "Intermedio",
+      "name": "Security and critical systems",
+      "level": "Advanced",
+      "keywords": [
+        "JWT",
+        "LDAP",
+        "Role-based access control",
+        "Encryption",
+        "ISO 8583",
+        "24/7 systems",
+        "On-premise deployment"
+      ]
+    },
+    {
+      "name": "Quality and accessibility",
+      "level": "Intermediate",
       "keywords": [
         "Jest",
-        "Pruebas unitarias y e2e",
-        "Swagger/OpenAPI"
+        "Vitest",
+        "Playwright",
+        "axe / WCAG 2.2",
+        "Zod",
+        "Swagger/OpenAPI",
+        "Strict TypeScript"
+      ]
+    },
+    {
+      "name": "Training and communication",
+      "level": "Advanced",
+      "keywords": [
+        "Corporate training",
+        "Course design",
+        "Cisco NetAcad instructor",
+        "Technical documentation"
       ]
     }
   ],
   "languages": [
     {
-      "language": "Español",
-      "fluency": "Nativo"
+      "language": "Spanish",
+      "fluency": "Native"
     },
     {
-      "language": "Inglés",
-      "fluency": "Intermedio"
+      "language": "English",
+      "fluency": "Intermediate"
     }
   ],
   "interests": [],
   "references": [],
   "projects": [
     {
-      "name": "Sistema Central de Cajeros NDC",
-      "isActive": false,
-      "description": "Procesamiento de transacciones financieras en tiempo real bajo ISO 8583 (2025).",
+      "name": "PetroAtlas – Open Source Oil Well Explorer",
+      "isActive": true,
+      "description": "Open source web application (MIT) for exploring oil wells with synthetic data from Venezuela: interactive map, well cards, production and pressure series, logs, engineering tools and in-browser analysis (2026, personal project).",
       "highlights": [
-        "C# y .NET",
-        "Simuladores de ATM y switches",
-        "Módulos de encriptación"
+        "TypeScript monorepo with Next.js (App Router), Express 5, PostgreSQL + PostGIS, MapLibre GL and ECharts; read-only REST API and a reproducible Docker Compose environment.",
+        "npm library @suricatoaviones/petro-calc published: Arps decline, forecasting and EUR, Vogel IPR, Standing PVT and Chan diagnostics, with over 90% coverage.",
+        "Browser-based CSV and LAS file import and validation with IndexedDB, without sending data to the server: a pattern applicable to confidential field information.",
+        "Synchronized time series, well trajectory, track-based logs, threshold alerts and comparison of up to eight wells.",
+        "Quality: strict TypeScript, Zod, Vitest, Playwright, axe audit (WCAG), GitHub Actions CI and a bilingual Spanish/English interface.",
+        "Deployed on Render; architecture documentation, ADRs and data model."
+      ],
+      "url": "https://petroatlas-web.onrender.com/es",
+      "github": "https://github.com/SuricatoAviones/petro-atlas"
+    },
+    {
+      "name": "Integrated Management System – Petrodelta (PDVSA)",
+      "isActive": false,
+      "description": "Document management web platform for Petrodelta, a PDVSA joint venture (2025, team project).",
+      "highlights": [
+        "Next.js, Node.js/Express, Prisma and SQL Server.",
+        "Corporate authentication with LDAP and JWT, with role-based access control.",
+        "Document upload, search and traceability for operational and administrative areas.",
+        "On-premise deployment on Windows Server with IIS, with no cloud dependency."
       ],
       "url": ""
     },
     {
-      "name": "Gestión de Portafolio de Proyectos – PDVSA ESEM",
+      "name": "Project Portfolio Management – PDVSA ESEM",
       "isActive": false,
-      "description": "Backend para gestionar proyectos, fases, tareas, equipos, costos y seguimiento, con reportes PDF para la gerencia (2024).",
+      "description": "Backend to manage projects, phases, tasks, teams, costs and tracking, with PDF reports for management (2024).",
       "highlights": [
-        "API REST con NestJS, TypeORM y PostgreSQL, documentada con Swagger",
-        "Autenticación JWT y roles",
-        "Pruebas unitarias y e2e con Jest"
+        "REST API with NestJS, TypeORM and PostgreSQL, documented with Swagger/OpenAPI.",
+        "Roles: worker, project lead, manager and administrator.",
+        "Automated PDF reports for cost and progress tracking.",
+        "Unit and e2e tests with Jest."
       ],
       "url": "",
       "github": "https://github.com/SuricatoAviones/backend-gestion-proyectos"
     },
     {
-      "name": "Sistema Integrado de Gestión – Petrodelta (PDVSA)",
-      "isActive": false,
-      "description": "Aplicación web de gestión documental para Petrodelta, empresa mixta de PDVSA (2025, colaborador).",
+      "name": "Self-Hosted AI Homelab",
+      "isActive": true,
+      "description": "Proxmox VE server for deploying self-hosted LLMs, agents and assistants with Dokploy and Docker, with no cloud dependency (personal project).",
       "highlights": [
-        "Next.js, Node.js/Express, Prisma y SQL Server",
-        "Autenticación corporativa con LDAP y JWT",
-        "Despliegue on-premise en Windows Server con IIS"
+        "Deployment of AI agents and assistants in containers, with administration and continuous deployment through Dokploy.",
+        "On-premise architecture for sensitive data, aligned with industry confidentiality requirements.",
+        "RAG lab, automation with n8n and model evaluation."
       ],
       "url": ""
     }
