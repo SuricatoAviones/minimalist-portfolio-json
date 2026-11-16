@@ -1,12 +1,12 @@
 {
   "basics": {
     "name": "Luis Angel Gutierrez Bonillo",
-    "label": "Ingeniero de Sistemas · Software Empresarial, IA Aplicada y Análisis de Datos para el Sector Energético",
-    "image": "/me.avif",
+    "label": "Desarrollador Full Stack | Medios de Pago, APIs y Sistemas Transaccionales",
+    "image": "/me.webp",
     "email": "luis.angel151199@gmail.com",
     "phone": "+58 414 8600062",
     "url": "https://luisangelgutierrez.com",
-    "summary": "Ingeniero de Sistemas con experiencia desarrollando software empresarial para la industria petrolera, incluyendo sistemas de gestión documental y de proyectos para PDVSA (Petrodelta y ESEM). He capacitado a profesionales de empresas petroleras en optimización de procesos con IA y análisis de datos con R. Experiencia en sistemas críticos de alta confiabilidad (procesamiento transaccional bajo ISO 8583), integración de ERP/CRM vía APIs REST y SOAP, autenticación corporativa con LDAP, y despliegues on-premise sobre Windows Server, Linux y Docker, incluyendo servidores Proxmox para alojar agentes y asistentes de IA (como OpenClaw) gestionados con Dokploy. Actualmente cursando una Maestría en Informática Gerencial con investigación en sistemas de IA desplegados localmente para el soporte a la toma de decisiones gerenciales. Radicado en Maturín, Monagas, uno de los principales polos petroleros de Venezuela.",
+    "summary": "Desarrollador Full Stack con más de 4 años de experiencia y trayectoria en medios de pago: desarrollé en C# y .NET el sistema Central de Cajeros NDC, procesando transacciones financieras en tiempo real bajo el estándar ISO 8583, con módulos de encriptación y simuladores de ATM y switches transaccionales. Construyo APIs RESTful con Node.js (NestJS, Express) sobre PostgreSQL y SQL Server, y frontends con React y Angular. Experiencia en autenticación y autorización (JWT, LDAP, roles), integración de pasarelas de pago, despliegues con Docker en Linux y Windows Server, y pruebas con Jest. Con base en Java; interesado en profundizar en Spring Boot y microservicios dentro del ecosistema de pagos de Suiche 7B.",
     "location": {
       "address": "",
       "postalCode": "6201",
@@ -29,18 +29,17 @@
   },
   "work": [
     {
-      "name": "Academos",
-      "position": "Instructor de IA, Análisis de Datos y Programación",
-      "url": "https://academos.com.ve",
-      "startDate": "2024-02-01",
-      "endDate": null,
-      "summary": "Capacitación técnica corporativa para empresas del sector petrolero en optimización de procesos con inteligencia artificial y análisis de datos con R, además de formación en desarrollo de software como instructor de la red Cisco NetAcad.",
+      "name": "EFT Solutions",
+      "position": "Desarrollador de Software – Medios de Pago (ISO 8583)",
+      "url": "https://eft-solutions.com",
+      "startDate": "2024-08-01",
+      "endDate": "2025-08-01",
+      "summary": "Sistemas de misión crítica para procesamiento de transacciones financieras en tiempo real, con altos requerimientos de seguridad y disponibilidad.",
       "highlights": [
-        "Dicté cursos de optimización de procesos con Inteligencia Artificial para personal de empresas petroleras, orientados a la aplicación práctica de IA en la operación y la gestión.",
-        "Dicté cursos de análisis de datos con R para empresas petroleras, cubriendo manipulación, visualización y análisis estadístico de datos operativos.",
-        "Instructor de la red Cisco NetAcad: JavaScript Essentials (JSE1 + JSE2), HTML/CSS Essentials e Introducción al Análisis de Datos.",
-        "Desarrollé el portal institucional de Academos con Astro y TailwindCSS, desde el diseño hasta el despliegue.",
-        "Construí el frontend de un sistema de lotería para el cliente Viapibets con React, Redux y TailwindCSS."
+        "Desarrollé en C# y .NET el sistema Central de Cajeros NDC, que procesa mensajes de transacciones financieras en tiempo real bajo el estándar ISO 8583.",
+        "Construí simuladores de cajeros automáticos y de switches transaccionales para probar flujos de autorización, reverso y error antes de producción.",
+        "Implementé módulos de encriptación y un panel de control para pruebas y validación del sistema.",
+        "Desarrollé el portal institucional de la empresa con Astro y TailwindCSS."
       ]
     },
     {
@@ -49,38 +48,26 @@
       "url": "https://tecnosoluciones.com",
       "startDate": "2025-03-01",
       "endDate": null,
-      "summary": "Integración de sistemas empresariales (ERP/CRM), automatización de procesos de negocio y diseño de soluciones de IA para múltiples clientes corporativos. Empresa con sede en Medellín, Colombia.",
+      "summary": "Integración de sistemas empresariales, automatización de procesos y soluciones de IA para clientes corporativos.",
       "highlights": [
-        "Diseñé un sistema de atención basado en RAG (Retrieval-Augmented Generation) con n8n, QDrant y Google Gemini, con clasificación de intención, agentes especializados y escalación a humano.",
-        "Implementé sincronización entre plataformas mediante APIs REST y SOAP, conectando CRM (Vtiger) y comercio electrónico con ERPs para automatizar la gestión de productos, inventario y órdenes.",
-        "Desarrollé módulos y personalizaciones sobre Dolibarr ERP.",
-        "Automaticé flujos de negocio con n8n para múltiples clientes, reduciendo tareas manuales en ventas, soporte y seguimiento.",
-        "Desarrollé plugins a medida con lógica de suscripciones, pasarelas de pago (ePayco), envíos con lógica geográfica y módulos de autenticación."
+        "Integré pasarelas de pago (ePayco) en plataformas de comercio electrónico con lógica de suscripciones.",
+        "Integré CRM y comercio electrónico con ERPs mediante APIs REST y SOAP, sincronizando productos, inventario y órdenes.",
+        "Diseñé un sistema de atención basado en RAG con n8n, QDrant y Google Gemini.",
+        "Desarrollé módulos de autenticación personalizados y extensiones a medida."
       ]
     },
     {
-      "name": "EFT Solutions",
-      "position": "Desarrollador de Software – Sistemas Críticos",
-      "url": "https://eft-solutions.com",
-      "startDate": "2024-08-01",
-      "endDate": "2025-08-01",
-      "summary": "Desarrollo de sistemas de misión crítica para procesamiento de transacciones financieras en tiempo real, con altos requerimientos de confiabilidad, seguridad y cumplimiento de estándares.",
+      "name": "Academos",
+      "position": "Instructor de IA, Análisis de Datos y Programación",
+      "url": "https://academos.com.ve",
+      "startDate": "2024-02-01",
+      "endDate": null,
+      "summary": "Capacitación técnica corporativa para empresas del sector petrolero e instructor de la red Cisco NetAcad.",
       "highlights": [
-        "Desarrollé el sistema Central de Cajeros NDC en .NET y C#, implementando el protocolo estándar ISO 8583 para el procesamiento de mensajes transaccionales en tiempo real.",
-        "Construí simuladores de cajeros automáticos (ATM), de switches transaccionales y de encriptación, junto a un panel de control para pruebas y validación en entornos controlados.",
-        "Diseñé y desarrollé el portal institucional de la empresa con Astro y TailwindCSS."
-      ]
-    },
-    {
-      "name": "Tofu",
-      "position": "Desarrollador Web",
-      "url": "https://tofu.lat",
-      "startDate": "2024-08-01",
-      "endDate": "2024-08-31",
-      "summary": "Desarrollo, configuración y mantenimiento de sitios corporativos para clientes en Lima, Perú.",
-      "highlights": [
-        "Desarrollé y personalicé sitios corporativos con WordPress y Elementor adaptados al branding de cada cliente.",
-        "Gestioné la configuración, mantenimiento y optimización de los sitios entregados."
+        "Dicté cursos de optimización de procesos con Inteligencia Artificial para personal de empresas petroleras.",
+        "Dicté cursos de análisis de datos con R para empresas petroleras: manipulación, visualización y análisis estadístico de datos operativos.",
+        "Instructor Cisco NetAcad: JavaScript Essentials, HTML/CSS Essentials e Introducción al Análisis de Datos.",
+        "Desarrollé el portal institucional de Academos con Astro y TailwindCSS."
       ]
     },
     {
@@ -89,24 +76,11 @@
       "url": "https://dlocs.tech",
       "startDate": "2023-10-01",
       "endDate": "2024-02-01",
-      "summary": "Desarrollo de aplicaciones web y APIs para empresa con sede en Wyoming, Estados Unidos.",
+      "summary": "Aplicaciones web y APIs para empresa con sede en Estados Unidos.",
       "highlights": [
-        "Desarrollé aplicaciones web con React, Next.js y Vite, mejorando la experiencia de usuario y los tiempos de carga.",
-        "Construí APIs RESTful escalables con Express.js y NestJS sobre PostgreSQL.",
-        "Implementé soluciones de autenticación y autorización para la protección de datos de usuarios."
-      ]
-    },
-    {
-      "name": "Centro Clínico La Pirámide",
-      "position": "Pasante de IT – Infraestructura y Soporte",
-      "url": "",
-      "startDate": "2022-10-01",
-      "endDate": "2022-12-01",
-      "summary": "Administración de infraestructura de red y servidores para garantizar la continuidad de servicios críticos.",
-      "highlights": [
-        "Gestioné la infraestructura de red, mejorando la velocidad y estabilidad de la conectividad.",
-        "Administré servidores Windows Server para asegurar la continuidad de los servicios críticos de la organización.",
-        "Brindé soporte técnico de hardware y software al personal."
+        "Construí APIs RESTful escalables con NestJS y Express sobre PostgreSQL.",
+        "Desarrollé frontends con React, Next.js y Vite, mejorando tiempos de carga.",
+        "Implementé autenticación y autorización para la protección de datos de usuarios."
       ]
     },
     {
@@ -115,11 +89,22 @@
       "url": "",
       "startDate": "2020-01-01",
       "endDate": "2020-12-01",
-      "summary": "Desarrollo de aplicaciones web y administración de servidores y bases de datos.",
+      "summary": "Aplicaciones web con Angular, administración de servidores Ubuntu y bases de datos MySQL.",
       "highlights": [
         "Desarrollé aplicaciones web con Angular y Angular Material.",
-        "Configuré y administré servidores Ubuntu, optimizando rendimiento y seguridad.",
-        "Diseñé y gestioné bases de datos MySQL con esquemas y consultas optimizadas."
+        "Diseñé bases de datos MySQL y administré servidores Ubuntu."
+      ]
+    },
+    {
+      "name": "Centro Clínico La Pirámide",
+      "position": "Pasante de IT – Infraestructura y Soporte",
+      "url": "",
+      "startDate": "2022-10-01",
+      "endDate": "2022-12-01",
+      "summary": "Infraestructura de red y servidores para servicios críticos.",
+      "highlights": [
+        "Administré servidores Windows Server y la red, asegurando la continuidad de servicios críticos.",
+        "Brindé soporte técnico de hardware y software al personal."
       ]
     }
   ],
@@ -128,13 +113,13 @@
     {
       "institution": "Universidad de Oriente",
       "url": "https://www.udo.edu.ve",
-      "area": "Informática Gerencial",
-      "studyType": "Magister Scientiarum (en curso)",
+      "area": "Magíster en Informática Gerencial",
+      "studyType": "En curso",
       "startDate": "2025-10-01",
       "endDate": null,
       "score": "",
       "courses": [
-        "Línea de investigación: sistemas de IA desplegados localmente (on-premise) para el soporte a la toma de decisiones gerenciales"
+        "Investigación: sistemas de IA desplegados localmente para el soporte a decisiones gerenciales"
       ]
     },
     {
@@ -150,179 +135,142 @@
   ],
   "awards": [],
   "certificates": [
-    { "name": "Networking Essentials", "issuer": "Cisco Networking Academy" },
-    { "name": "Foundational C# with Microsoft", "issuer": "freeCodeCamp" },
-    { "name": "Universidad Excel – Básico, Intermedio y Avanzado", "issuer": "Udemy" },
-    { "name": "JavaScript Moderno", "issuer": "Udemy" },
-    { "name": "React – La Guía Completa", "issuer": "Udemy" },
-    { "name": "Headless WordPress – Astro, WP REST API, Tailwind, TypeScript", "issuer": "Udemy" },
-    { "name": "Soporte Técnico", "issuer": "Capedsia" },
-    { "name": "Trabajo Remoto o Teletrabajo", "issuer": "Platzi" },
-    { "name": "Maquetación Web", "issuer": "SSN" },
-    { "name": "Inglés Básico", "issuer": "Michigan Academy" }
+    {
+      "name": "Foundational C# with Microsoft",
+      "issuer": "freeCodeCamp"
+    },
+    {
+      "name": "Networking Essentials",
+      "issuer": "Cisco Networking Academy"
+    }
   ],
   "publications": [],
   "skills": [
     {
-      "name": "Inteligencia Artificial Aplicada",
+      "name": "Medios de pago y seguridad transaccional",
       "level": "Avanzado",
-      "keywords": ["LLMs", "RAG", "Agentes de IA", "OpenClaw", "Asistentes de IA self-hosted", "Google Gemini", "QDrant", "Bases de datos vectoriales", "IA on-premise", "Optimización de procesos con IA"]
+      "keywords": [
+        "ISO 8583",
+        "Switches transaccionales",
+        "Cajeros automáticos (ATM)",
+        "Pasarelas de pago",
+        "Encriptación"
+      ]
     },
     {
-      "name": "Análisis de Datos",
+      "name": "Backend",
       "level": "Avanzado",
-      "keywords": ["R", "Python", "SQL", "Excel Avanzado", "Visualización de datos", "Análisis estadístico"]
+      "keywords": [
+        "Node.js",
+        "NestJS",
+        "Express",
+        "TypeScript",
+        "C#",
+        ".NET",
+        "Java",
+        "APIs RESTful"
+      ]
     },
     {
-      "name": "Software Empresarial para Oil & Gas",
+      "name": "Frontend",
       "level": "Avanzado",
-      "keywords": ["Gestión documental", "Gestión de proyectos", "Intranets corporativas", "Reportes PDF automatizados", "PDVSA"]
+      "keywords": [
+        "React",
+        "Angular",
+        "Next.js",
+        "TypeScript",
+        "TailwindCSS"
+      ]
     },
     {
-      "name": "Automatización e Integración de Sistemas",
+      "name": "Bases de datos",
       "level": "Avanzado",
-      "keywords": ["n8n", "APIs REST", "APIs SOAP", "Dolibarr ERP", "Vtiger CRM", "Mautic", "Sincronización de inventario y órdenes"]
+      "keywords": [
+        "PostgreSQL",
+        "SQL Server",
+        "MySQL",
+        "Modelado relacional",
+        "Prisma",
+        "TypeORM"
+      ]
     },
     {
-      "name": "Sistemas Críticos y Seguridad",
+      "name": "Seguridad",
       "level": "Avanzado",
-      "keywords": ["C#", ".NET", "ISO 8583", "Encriptación", "LDAP", "JWT", "Autenticación y autorización", "Pruebas y validación"]
+      "keywords": [
+        "JWT",
+        "LDAP",
+        "Control de acceso por roles",
+        "Validación estricta de entradas"
+      ]
     },
     {
-      "name": "Bases de Datos",
+      "name": "Infraestructura",
       "level": "Avanzado",
-      "keywords": ["SQL Server", "PostgreSQL", "MySQL", "MongoDB", "Prisma", "TypeORM", "Sequelize"]
+      "keywords": [
+        "Docker",
+        "Linux",
+        "Windows Server",
+        "IIS",
+        "Proxmox VE"
+      ]
     },
     {
-      "name": "Infraestructura y Servidores",
-      "level": "Avanzado",
-      "keywords": ["Proxmox VE", "Virtualización", "Dokploy", "Docker", "Despliegue de agentes de IA", "Windows Server", "IIS", "Linux", "Redes"]
-    },
-    {
-      "name": "Desarrollo de Software Full Stack",
-      "level": "Avanzado",
-      "keywords": ["TypeScript", "JavaScript", "Node.js", "Express", "NestJS", "Next.js", "React", "Angular", "Astro", "PHP", "Laravel", "TailwindCSS"]
-    },
-    {
-      "name": "Lenguajes de Programación",
+      "name": "Calidad",
       "level": "Intermedio",
-      "keywords": ["Python", "R", "Java", "C++", "C#", "PHP"]
-    },
-    {
-      "name": "Formación y Capacitación Técnica",
-      "level": "Avanzado",
-      "keywords": ["Capacitación corporativa", "Instructor Cisco NetAcad", "Diseño de cursos", "Transferencia de conocimiento"]
+      "keywords": [
+        "Jest",
+        "Pruebas unitarias y e2e",
+        "Swagger/OpenAPI"
+      ]
     }
   ],
   "languages": [
-    { "language": "Español", "fluency": "Nativo" },
-    { "language": "Inglés", "fluency": "Intermedio" }
+    {
+      "language": "Español",
+      "fluency": "Nativo"
+    },
+    {
+      "language": "Inglés",
+      "fluency": "Intermedio"
+    }
   ],
-  "interests": [
-    { "name": "Transformación digital en la industria energética", "keywords": ["Oil & Gas", "Petroquímica", "Servicios petroleros"] },
-    { "name": "IA para la toma de decisiones", "keywords": ["IA local", "Soberanía de datos", "Analítica operativa"] }
-  ],
+  "interests": [],
   "references": [],
   "projects": [
     {
-      "name": "Sistema Integrado de Gestión – Petrodelta (PDVSA)",
+      "name": "Sistema Central de Cajeros NDC",
       "isActive": false,
-      "description": "Aplicación web empresarial de gestión documental para Petrodelta, empresa mixta de PDVSA. Participación como colaborador (2025).",
+      "description": "Procesamiento de transacciones financieras en tiempo real bajo ISO 8583 (2025).",
       "highlights": [
-        "Next.js + TypeScript, Node.js/Express, Prisma y SQL Server",
-        "Autenticación corporativa con LDAP y JWT",
-        "Carga de archivos y generación de reportes PDF",
-        "Despliegue on-premise en Windows Server con IIS"
+        "C# y .NET",
+        "Simuladores de ATM y switches",
+        "Módulos de encriptación"
       ],
       "url": ""
     },
     {
-      "name": "Sistema de Gestión de Portafolio de Proyectos – PDVSA ESEM",
+      "name": "Gestión de Portafolio de Proyectos – PDVSA ESEM",
       "isActive": false,
-      "description": "Backend del sistema de gestión de portafolio de proyectos de PDVSA ESEM (2024): proyectos, fases, tareas, equipos, costos, seguimiento y áreas técnicas, con reportes PDF para la gerencia.",
+      "description": "Backend para gestionar proyectos, fases, tareas, equipos, costos y seguimiento, con reportes PDF para la gerencia (2024).",
       "highlights": [
-        "API REST con NestJS 10 (TypeScript), TypeORM y PostgreSQL, documentada con Swagger",
-        "Autenticación JWT y control de acceso por roles: trabajador, líder de proyecto, gerente y administrador",
-        "Más de 20 módulos: proyectos, fases, tareas, equipos, costos, seguimientos, áreas técnicas, foros y mensajería",
-        "Reportes PDF de uno o varios proyectos generados con Puppeteer",
-        "Pruebas unitarias y e2e con Jest, validación estricta de DTOs"
+        "API REST con NestJS, TypeORM y PostgreSQL, documentada con Swagger",
+        "Autenticación JWT y roles",
+        "Pruebas unitarias y e2e con Jest"
       ],
       "url": "",
       "github": "https://github.com/SuricatoAviones/backend-gestion-proyectos"
     },
     {
-      "name": "Sistema de Atención con IA (RAG)",
-      "isActive": true,
-      "description": "Arquitectura de atención automatizada con recuperación de conocimiento, clasificación de intención y agentes especializados.",
-      "highlights": ["n8n", "QDrant", "Google Gemini", "Escalación a humano"],
-      "url": ""
-    },
-    {
-      "name": "Sistema Central de Cajeros NDC",
+      "name": "Sistema Integrado de Gestión – Petrodelta (PDVSA)",
       "isActive": false,
-      "description": "Sistema de misión crítica para procesamiento de transacciones financieras en tiempo real bajo el estándar ISO 8583 (2025).",
-      "highlights": [".NET y C#", "Simuladores de ATM, switches y encriptación", "Panel de pruebas y validación"],
+      "description": "Aplicación web de gestión documental para Petrodelta, empresa mixta de PDVSA (2025, colaborador).",
+      "highlights": [
+        "Next.js, Node.js/Express, Prisma y SQL Server",
+        "Autenticación corporativa con LDAP y JWT",
+        "Despliegue on-premise en Windows Server con IIS"
+      ],
       "url": ""
-    },
-    {
-      "name": "Backend de Gestión Operativa – Garage Street",
-      "isActive": false,
-      "description": "API para la gestión operativa de un taller automotriz (2025).",
-      "highlights": ["Node.js", "NestJS", "TypeORM", "PostgreSQL"],
-      "url": "",
-      "github": "https://github.com/SuricatoAviones/backend-garage-street"
-    },
-    {
-      "name": "CalcUDO",
-      "isActive": true,
-      "description": "Calculadora web open source para estudiantes de Ingeniería de Sistemas de la UDO, con métodos numéricos e investigación de operaciones (2026).",
-      "highlights": ["Método de Newton", "Teoría de colas", "Next.js", "Open source"],
-      "url": "https://calc-udo.vercel.app",
-      "github": "https://github.com/SuricatoAviones/calc-udo"
-    },
-    {
-      "name": "Homelab: Infraestructura Self-Hosted para Agentes de IA",
-      "isActive": true,
-      "description": "Proyecto personal: homelab con Proxmox VE donde virtualizo y despliego agentes y asistentes de IA (como OpenClaw) y servicios propios, administrados con Dokploy.",
-      "highlights": ["Proxmox VE", "Dokploy", "Docker", "Agentes de IA self-hosted", "IA sin dependencia de la nube"],
-      "url": ""
-    },
-    {
-      "name": "Spentz Trackr",
-      "isActive": true,
-      "description": "Aplicación web para el control de gastos (2026).",
-      "highlights": ["Laravel", "Inertia", "React", "PostgreSQL", "TailwindCSS"],
-      "url": "",
-      "github": "https://github.com/SuricatoAviones/spentz-trackr"
-    },
-    {
-      "name": "Portal Web Institucional – Academos",
-      "isActive": true,
-      "description": "Portal institucional desarrollado desde el diseño hasta el despliegue, enfocado en rendimiento y experiencia de usuario (2026).",
-      "highlights": ["Astro", "TailwindCSS", "JavaScript"],
-      "url": "https://www.academos.com.ve",
-      "github": "https://github.com/SuricatoAviones/academos-web"
-    },
-    {
-      "name": "Portal Web – EFT Solutions",
-      "isActive": true,
-      "description": "Portal institucional con arquitectura moderna, rápida y de fácil mantenimiento (2025).",
-      "highlights": ["Astro", "TailwindCSS"],
-      "url": "https://eft-solutions.com"
-    },
-    {
-      "name": "Portal Web – Boxers Denver",
-      "isActive": true,
-      "description": "Catálogo web de cachorros disponibles con WordPress como CMS headless (2026).",
-      "highlights": ["Astro", "WordPress Headless", "TailwindCSS"],
-      "url": "https://boxersdenver.com"
-    },
-    {
-      "name": "Portal Web – Romilca",
-      "isActive": true,
-      "description": "Sitio web corporativo (2020).",
-      "highlights": ["HTML5", "CSS", "JavaScript", "PHP"],
-      "url": "https://romilca.com"
     }
   ]
 }
