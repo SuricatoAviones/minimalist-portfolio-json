@@ -16,6 +16,7 @@ import {
   type PDFPage,
 } from "pdf-lib"
 import type { CV } from "@/types/cv"
+import { localeTag, type Lang } from "@/i18n/ui"
 import { buildCvContent, type CvBlock, type CvContent, type CvEntry, type Segment } from "@/lib/cv-content"
 import {
   PDF_COLOR,
@@ -350,8 +351,8 @@ class CvWriter {
 }
 
 /** Genera en el navegador el CV en PDF a partir de cualquier JSON Resume validado. */
-export async function createCvPdfBrowser(cv: CV): Promise<Uint8Array> {
-  const content = buildCvContent(cv)
+export async function createCvPdfBrowser(cv: CV, lang: Lang = "es"): Promise<Uint8Array> {
+  const content = buildCvContent(cv, lang)
   const { name, label } = cv.basics
 
   const doc = await PDFDocument.create()
@@ -361,7 +362,7 @@ export async function createCvPdfBrowser(cv: CV): Promise<Uint8Array> {
   doc.setKeywords(cv.skills.map(({ name }) => name))
   doc.setCreator("minimalist-portfolio-json")
   doc.setProducer("minimalist-portfolio-json")
-  doc.setLanguage("es-ES")
+  doc.setLanguage(localeTag[lang])
 
   const regular = await doc.embedFont(StandardFonts.Helvetica)
   const bold = await doc.embedFont(StandardFonts.HelveticaBold)

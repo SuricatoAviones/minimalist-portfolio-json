@@ -1,26 +1,33 @@
 ---
 import Download from "@/icons/Download.astro"
 import Upload from "@/icons/Upload.astro"
-import { CV_PDF_URL } from "@/lib/cv-download"
+import { ui, type Lang } from "@/i18n/ui"
+import { cvPdfPath } from "@/lib/cv-download"
+
+interface Props {
+    lang: Lang
+}
+
+const { lang } = Astro.props
+const t = ui[lang].generator
+const pdfUrl = cvPdfPath(lang)
 ---
 
-<section id="generador" class="generator no-print" aria-labelledby="generador-title">
-    <h2 id="generador-title">Genera tu CV desde un JSON</h2>
+<section id="generator" class="generator no-print" aria-labelledby="generator-title">
+    <h2 id="generator-title">{t.title}</h2>
     <p>
-        Sube tu archivo <code>cv.json</code> (formato
-        <a href="https://jsonresume.org/schema"
+        {t.introStart} <code>cv.json</code> {t.introAfterFile}<a href="https://jsonresume.org/schema"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Esquema JSON Resume (se abre en una pestaña nueva)">JSON Resume</a>)
-        y descarga un PDF con el mismo diseño y formato compatible con ATS que
-        <a href={CV_PDF_URL}>mi CV</a>. El archivo se procesa en tu navegador: no se sube a ningún servidor.
+            aria-label={t.schemaLinkLabel}>{t.schemaLink}</a>{t.introMiddle}
+        <a href={pdfUrl}>{t.myCv}</a>{t.introEnd}
     </p>
 
-    <div class="panel" data-cv-generator>
+    <div class="panel" data-cv-generator data-lang={lang}>
         <label class="dropzone" for="cv-json" data-cv-dropzone>
             <Upload />
-            <span class="dropzone-title">Arrastra tu <code>cv.json</code> o pulsa para seleccionarlo</span>
-            <span class="dropzone-hint">JSON Resume · máximo 4 MB</span>
+            <span class="dropzone-title">{t.dropTitle} <code>cv.json</code> {t.dropOr}</span>
+            <span class="dropzone-hint">{t.dropHint}</span>
             <input class="visually-hidden" id="cv-json" type="file" accept=".json,application/json" data-cv-input />
         </label>
 
@@ -29,11 +36,11 @@ import { CV_PDF_URL } from "@/lib/cv-download"
 
         <button class="download" type="button" disabled data-cv-download>
             <Download />
-            Descargar CV
+            {t.download}
         </button>
 
         <noscript>
-            <p class="hint">Necesitas activar JavaScript para generar un PDF desde tu archivo.</p>
+            <p class="hint">{t.noscript}</p>
         </noscript>
     </div>
 </section>
@@ -41,6 +48,7 @@ import { CV_PDF_URL } from "@/lib/cv-download"
 <script>
     import { validateCv } from "@/lib/cv-schema"
     import { cvFilename } from "@/lib/cv-filename"
+    import { ui, type Lang } from "@/i18n/ui"
 
     const MAX_SIZE = 4 * 1024 * 1024
     const MAX_LISTED_ERRORS = 12
@@ -48,6 +56,8 @@ import { CV_PDF_URL } from "@/lib/cv-download"
     const root = document.querySelector<HTMLElement>("[data-cv-generator]")
 
     if (root) {
+        const lang: Lang = root.dataset.lang === "en" ? "en" : "es"
+        const t = ui[lang].generator
         const input = root.querySelector<HTMLInputElement>("[data-cv-input]")
         const dropzone = root.querySelector<HTMLElement>("[data-cv-dropzone]")
         const status = root.querySelector<HTMLElement>("[data-cv-status]")
@@ -80,7 +90,7 @@ import { CV_PDF_URL } from "@/lib/cv-download"
 
             if (messages.length > MAX_LISTED_ERRORS) {
                 const item = document.createElement("li")
-                item.textContent = `Y ${messages.length - MAX_LISTED_ERRORS} problemas más.`
+                item.textContent = t.moreIssues(messages.length - MAX_LISTED_ERRORS)
                 errors.append(item)
             }
 
@@ -99,7 +109,7 @@ import { CV_PDF_URL } from "@/lib/cv-download"
             clearErrors()
 
             if (file.size > MAX_SIZE) {
-                setStatus("El archivo supera los 4 MB. Prueba con un JSON más pequeño.")
+                setStatus(t.fileTooLarge)
                 return
             }
 
@@ -108,30 +118,28 @@ import { CV_PDF_URL } from "@/lib/cv-download"
                 data = JSON.parse(await file.text())
             } catch (error) {
                 if (current !== job) return
-                const detail = error instanceof Error ? error.message : "formato desconocido"
-                setStatus(`El archivo no contiene JSON válido (${detail}).`)
+                const detail = error instanceof Error ? error.message : t.unknownFormat
+                setStatus(t.invalidJson(detail))
                 return
             }
 
             if (current !== job) return
 
-            const validation = validateCv(data)
+            const validation = validateCv(data, lang)
             if (!validation.ok) {
                 setStatus(
-                    validation.errors.length === 1
-                        ? "Encontramos un problema en el JSON:"
-                        : `Encontramos ${validation.errors.length} problemas en el JSON:`
+                    validation.errors.length === 1 ? t.oneIssue : t.manyIssues(validation.errors.length)
                 )
                 showErrors(validation.errors)
                 return
             }
 
-            setStatus("Generando el PDF…")
+            setStatus(t.generating)
             if (button) button.disabled = true
 
             try {
                 const { createCvPdfBrowser } = await import("@/lib/cv-pdf-browser")
-                const pdf = await createCvPdfBrowser(validation.cv)
+                const pdf = await createCvPdfBrowser(validation.cv, lang)
                 if (current !== job) return
 
                 const blob = new Blob([new Uint8Array(pdf)], { type: "application/pdf" })
@@ -139,11 +147,11 @@ import { CV_PDF_URL } from "@/lib/cv-download"
                 downloadUrl = URL.createObjectURL(blob)
                 downloadName = cvFilename(validation.cv.basics.name)
                 if (button) button.disabled = false
-                setStatus(`CV de ${validation.cv.basics.name} listo. Pulsa «Descargar CV» para guardarlo.`)
+                setStatus(t.ready(validation.cv.basics.name))
             } catch (error) {
                 if (current !== job) return
                 console.error(error)
-                setStatus("No se pudo generar el PDF. Revisa que el JSON tenga los datos del CV.")
+                setStatus(t.failed)
             }
         }
 

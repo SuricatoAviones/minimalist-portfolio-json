@@ -1,0 +1,63 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import LanguageSwitcher from "@/components/LanguageSwitcher.astro"
+import Experience from "@/components/sections/Experience.astro"
+import About from "@/components/sections/About.astro"
+import Education from "@/components/sections/Education.astro"
+import Hero from "@/components/sections/Hero.astro"
+import Skills from "@/components/sections/Skills.astro"
+import Projects from "@/components/sections/Projects.astro"
+import KeyboardManager from "@/components/KeyboardManager.astro"
+import CvGenerator from "@/components/CvGenerator.astro"
+import { cvs } from "@cv"
+import type { Lang } from "@/i18n/ui"
+
+interface Props {
+    lang: Lang
+}
+
+const { lang } = Astro.props
+const cv = cvs[lang]
+const { basics, work, education, projects, skills } = cv
+---
+
+<Layout lang={lang} cv={cv} title={`${basics.name} - ${basics.label}`}>
+	<main>
+		<div class="topbar">
+			<LanguageSwitcher lang={lang} />
+		</div>
+		<Hero lang={lang} basics={basics} />
+		<About lang={lang} basics={basics} />
+		<Experience lang={lang} work={work} />
+		<Education lang={lang} education={education} />
+		<Projects lang={lang} projects={projects} />
+		<Skills lang={lang} skills={skills} />
+		<CvGenerator lang={lang} />
+	</main>
+	<KeyboardManager lang={lang} basics={basics} />
+</Layout>
+
+<style>
+	main{
+		padding: 4rem;
+		margin: auto;
+		width: 100%;
+	}
+	.topbar{
+		max-width: 700px;
+		margin: 0 auto 16px;
+	}
+	@media (width <= 700px){
+		main{
+			padding: 2rem 1.25rem;
+		}
+	}
+	@media print{
+		main{
+			padding: 0;
+		}
+		.topbar{
+			display: none;
+		}
+	}
+</style>

@@ -1,11 +1,20 @@
 ---
 import Section from "@/components/Section.astro"
-import { education } from "@cv"
-import { PRESENT_LABEL, getYear } from "@/lib/dates"
+import type { Education } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
+import { getYear } from "@/lib/dates"
+
+interface Props {
+    lang: Lang
+    education: Education[]
+}
+
+const { lang, education } = Astro.props
+const t = ui[lang]
 ---
 
 {education.length > 0 && (
-    <Section id="educacion" title="Educación">
+    <Section id="education" title={t.sections.education}>
         <ul class="studies">
             {education.map(({ institution, url, area, studyType, startDate, endDate }) => (
                 <li>
@@ -13,13 +22,13 @@ import { PRESENT_LABEL, getYear } from "@/lib/dates"
                         <header>
                             <h3>
                                 {url
-                                    ? <a href={url} title={`Ver ${institution}`} target="_blank" rel="noopener noreferrer">{institution}</a>
+                                    ? <a href={url} title={t.education.view(institution)} target="_blank" rel="noopener noreferrer">{institution}</a>
                                     : institution}
                             </h3>
                             <p class="dates">
                                 <time datetime={startDate}>{getYear(startDate)}</time>
                                 {" - "}
-                                {endDate ? <time datetime={endDate}>{getYear(endDate)}</time> : PRESENT_LABEL}
+                                {endDate ? <time datetime={endDate}>{getYear(endDate)}</time> : t.present}
                             </p>
                         </header>
                         <p>{studyType ? `${area} (${studyType})` : area}</p>

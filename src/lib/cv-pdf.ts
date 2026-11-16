@@ -1,5 +1,6 @@
 import PDFDocument from "pdfkit"
 import type { CV } from "@/types/cv"
+import { localeTag, type Lang } from "@/i18n/ui"
 import {
   buildCvContent,
   type CvBlock,
@@ -21,7 +22,7 @@ import {
  * Generador del CV en PDF optimizado para ATS (Applicant Tracking Systems):
  * - Una sola columna y orden de lectura lineal: sin tablas, cuadros de texto, iconos ni imágenes.
  * - Fuente estándar (Helvetica) con codificación WinAnsi: el texto es seleccionable y extraíble.
- * - Encabezados de sección estándar ("Experiencia laboral", "Educación", "Habilidades"...).
+ * - Encabezados de sección estándar en el idioma del CV ("Work Experience", "Experiencia laboral"...).
  * - Datos de contacto en el cuerpo del documento (no en cabeceras ni pies de página).
  * - Fechas en formato MM/YYYY y URLs escritas completas en texto plano.
  * - PDF etiquetado (tagged) con idioma y metadatos (título, autor, asunto y palabras clave).
@@ -188,9 +189,9 @@ function renderCv(doc: Doc, content: CvContent) {
   root.end()
 }
 
-/** Genera el CV en PDF a partir de los datos de `cv.json`. */
-export function createCvPdf(cv: CV): Promise<Uint8Array<ArrayBuffer>> {
-  const content = buildCvContent(cv)
+/** Genera el CV en PDF a partir de los datos de `cv.json` en el idioma indicado. */
+export function createCvPdf(cv: CV, lang: Lang = "es"): Promise<Uint8Array<ArrayBuffer>> {
+  const content = buildCvContent(cv, lang)
   const { name, label } = cv.basics
 
   const doc = new PDFDocument({
@@ -198,7 +199,7 @@ export function createCvPdf(cv: CV): Promise<Uint8Array<ArrayBuffer>> {
     margin: MARGIN,
     pdfVersion: "1.7",
     tagged: true,
-    lang: "es-ES",
+    lang: localeTag[lang],
     displayTitle: true,
     info: {
       Title: `${name} - CV`,

@@ -1,10 +1,19 @@
 ---
 import Section from "@/components/Section.astro"
 import GitHub from "@/icons/GitHub.astro"
-import { projects } from "@cv"
+import type { Project } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
+
+interface Props {
+    lang: Lang
+    projects: Project[]
+}
+
+const { lang, projects } = Astro.props
+const t = ui[lang]
 ---
 
-<Section id="proyectos" title="Proyectos">
+<Section id="projects" title={t.sections.projects}>
     <ul class="projects">
         {
             projects.map(({url, description, highlights, name, isActive, github}) => (
@@ -13,19 +22,19 @@ import { projects } from "@cv"
                         <header>
                             <h3>
                                 {url
-                                    ? <a href={url} title={`Ver el proyecto ${name}`} target="_blank" rel="noopener noreferrer">{name}</a>
+                                    ? <a href={url} title={t.projects.view(name)} target="_blank" rel="noopener noreferrer">{name}</a>
                                     : name}
                                 {isActive && (
-                                    <span class="status" title="Proyecto activo">
+                                    <span class="status" title={t.projects.activeTitle}>
                                         <span aria-hidden="true">•</span>
-                                        <span class="visually-hidden">(activo)</span>
+                                        <span class="visually-hidden">{t.projects.activeLabel}</span>
                                     </span>
                                 )}
                                 {github && (
                                     <a class="github-code-link"
                                         href={github}
-                                        title={`Ver el código fuente del proyecto ${name}`}
-                                        aria-label={`Código fuente de ${name} en GitHub (se abre en una pestaña nueva)`}
+                                        title={t.projects.sourceTitle(name)}
+                                        aria-label={t.projects.sourceLabel(name)}
                                         target="_blank"
                                         rel="noopener noreferrer">
                                         <GitHub />

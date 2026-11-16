@@ -15,7 +15,16 @@ import Swift from "@/icons/swift.astro"
 import SwiftUI from "@/icons/swiftui.astro"
 import Kotlin from "@/icons/kotlin.astro"
 import Flutter from "@/icons/flutter.astro"
-import {skills} from "@cv"
+import type { Skill } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
+
+interface Props {
+    lang: Lang
+    skills: Skill[]
+}
+
+const { lang, skills } = Astro.props
+const t = ui[lang]
 
 const SKILLS_ICONS: Record<string, any> = {
     HTML,
@@ -36,7 +45,7 @@ const SKILLS_ICONS: Record<string, any> = {
 }
 ---
 
-<Section id="habilidades" title="Habilidades">
+<Section id="skills" title={t.sections.skills}>
     <ul>
         {
             skills.map(({name})=>{

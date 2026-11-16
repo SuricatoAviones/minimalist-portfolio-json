@@ -1,4 +1,5 @@
 import type { CV, DateString } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
 import { formatMonthYear, formatMonthYearRange } from "@/lib/dates"
 
 /*
@@ -68,8 +69,9 @@ const paragraph = (segments: Segment[], spaceBefore?: number): CvBlock => ({
   ...(spaceBefore ? { spaceBefore } : {}),
 })
 
-export function buildCvContent(cv: CV): CvContent {
+export function buildCvContent(cv: CV, lang: Lang = "es"): CvContent {
   const { basics, work, volunteer, education, awards, certificates, publications, skills, languages, projects } = cv
+  const t = ui[lang]
 
   const { city, region } = basics.location
   const location = [city, region].filter(Boolean).join(", ")
@@ -83,18 +85,18 @@ export function buildCvContent(cv: CV): CvContent {
   const sections: CvSection[] = []
 
   if (basics.summary) {
-    sections.push({ title: "Perfil profesional", blocks: [paragraph([{ text: basics.summary }])] })
+    sections.push({ title: t.pdf.sections.summary, blocks: [paragraph([{ text: basics.summary }])] })
   }
 
   if (work.length > 0) {
     sections.push({
-      title: "Experiencia laboral",
+      title: t.pdf.sections.work,
       blocks: [
         {
           type: "entries",
           entries: work.map((job) => ({
             title: [{ text: job.position, bold: true }],
-            subtitle: [job.name, job.location, formatMonthYearRange(job.startDate, job.endDate)]
+            subtitle: [job.name, job.location, formatMonthYearRange(job.startDate, job.endDate, t.present)]
               .filter(Boolean)
               .join(SEPARATOR),
             summary: job.summary,
@@ -107,13 +109,13 @@ export function buildCvContent(cv: CV): CvContent {
 
   if (education.length > 0) {
     sections.push({
-      title: "Educación",
+      title: t.pdf.sections.education,
       blocks: [
         {
           type: "entries",
           entries: education.map((study) => ({
             title: [{ text: study.studyType ? `${study.area} (${study.studyType})` : study.area, bold: true }],
-            subtitle: [study.institution, formatMonthYearRange(study.startDate, study.endDate)]
+            subtitle: [study.institution, formatMonthYearRange(study.startDate, study.endDate, t.present)]
               .filter(Boolean)
               .join(SEPARATOR),
           })),
@@ -130,17 +132,17 @@ export function buildCvContent(cv: CV): CvContent {
     )
 
     const blocks: CvBlock[] = [
-      paragraph([{ text: "Tecnologías: ", bold: true }, { text: technologies.join(", ") }]),
+      paragraph([{ text: t.pdf.technologies, bold: true }, { text: technologies.join(", ") }]),
     ]
     if (competencies.length > 0) {
-      blocks.push(paragraph([{ text: "Competencias: ", bold: true }, { text: competencies.join(", ") }], 0.2))
+      blocks.push(paragraph([{ text: t.pdf.competencies, bold: true }, { text: competencies.join(", ") }], 0.2))
     }
-    sections.push({ title: "Habilidades", blocks })
+    sections.push({ title: t.pdf.sections.skills, blocks })
   }
 
   if (projects.length > 0) {
     sections.push({
-      title: "Proyectos",
+      title: t.pdf.sections.projects,
       blocks: [
         {
           type: "entries",
@@ -160,7 +162,7 @@ export function buildCvContent(cv: CV): CvContent {
 
   if (certificates.length > 0) {
     sections.push({
-      title: "Certificaciones",
+      title: t.pdf.sections.certificates,
       blocks: [
         {
           type: "entries",
@@ -176,7 +178,7 @@ export function buildCvContent(cv: CV): CvContent {
 
   if (awards.length > 0) {
     sections.push({
-      title: "Premios",
+      title: t.pdf.sections.awards,
       blocks: [
         {
           type: "entries",
@@ -192,7 +194,7 @@ export function buildCvContent(cv: CV): CvContent {
 
   if (publications.length > 0) {
     sections.push({
-      title: "Publicaciones",
+      title: t.pdf.sections.publications,
       blocks: [
         {
           type: "entries",
@@ -211,13 +213,15 @@ export function buildCvContent(cv: CV): CvContent {
 
   if (volunteer.length > 0) {
     sections.push({
-      title: "Voluntariado",
+      title: t.pdf.sections.volunteer,
       blocks: [
         {
           type: "entries",
           entries: volunteer.map((item) => ({
             title: [{ text: item.position, bold: true }],
-            subtitle: [item.organization, formatMonthYearRange(item.startDate, item.endDate)].join(SEPARATOR),
+            subtitle: [item.organization, formatMonthYearRange(item.startDate, item.endDate, t.present)].join(
+              SEPARATOR
+            ),
             summary: item.summary,
             highlights: item.highlights,
           })),
@@ -228,7 +232,7 @@ export function buildCvContent(cv: CV): CvContent {
 
   if (languages.length > 0) {
     sections.push({
-      title: "Idiomas",
+      title: t.pdf.sections.languages,
       blocks: languages.map(({ language, fluency }) => paragraph([{ text: `${language}: `, bold: true }, { text: fluency }])),
     })
   }

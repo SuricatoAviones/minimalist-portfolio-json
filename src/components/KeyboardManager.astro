@@ -1,6 +1,7 @@
 ---
-import { basics } from "@cv"
-import { CV_PDF_FILENAME, CV_PDF_URL } from "@/lib/cv-download"
+import type { Basics } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
+import { cvPdfFilename, cvPdfPath } from "@/lib/cv-download"
 import Command from "@/icons/Command.astro"
 import Download from "@/icons/Download.astro"
 import Printer from "@/icons/Printer.astro"
@@ -20,34 +21,41 @@ interface PaletteCommand {
     action?: "print"
 }
 
+interface Props {
+    lang: Lang
+    basics: Basics
+}
+
+const { lang, basics } = Astro.props
+const t = ui[lang].keyboard
 const { email, phone, profiles } = basics
 
 const SOCIAL_ICONS: Record<string, any> = { GitHub, LinkedIn, X }
 
 const actions: PaletteCommand[] = [
-    { id: "download-cv", title: "Descargar CV (PDF)", icon: Download, href: CV_PDF_URL, download: CV_PDF_FILENAME },
-    { id: "print", title: "Imprimir", icon: Printer, action: "print" },
+    { id: "download-cv", title: t.download, icon: Download, href: cvPdfPath(lang), download: cvPdfFilename(basics.name) },
+    { id: "print", title: t.print, icon: Printer, action: "print" },
 ]
-if (email) actions.push({ id: "email", title: "Enviar un correo", icon: Mail, href: `mailto:${email}` })
-if (phone) actions.push({ id: "phone", title: "Llamar por teléfono", icon: Phone, href: `tel:${phone.replace(/[^\d+]/g, "")}` })
+if (email) actions.push({ id: "email", title: t.email, icon: Mail, href: `mailto:${email}` })
+if (phone) actions.push({ id: "phone", title: t.phone, icon: Phone, href: `tel:${phone.replace(/[^\d+]/g, "")}` })
 
 const social: PaletteCommand[] = profiles.map(({ network, url }) => ({
     id: `social-${network.toLowerCase()}`,
-    title: `Visitar ${network}`,
+    title: t.visit(network),
     icon: SOCIAL_ICONS[network],
     href: url,
     external: true,
 }))
 
 const groups = [
-    { id: "acciones", title: "Acciones", commands: actions },
-    { id: "social", title: "Social", commands: social },
+    { id: "actions", title: t.actions, commands: actions },
+    { id: "social", title: t.social, commands: social },
 ].filter(({ commands }) => commands.length > 0)
 ---
 
 <footer class="hint no-print">
     <button type="button" data-open-palette aria-haspopup="dialog" aria-controls="command-palette">
-        Pulsa <kbd data-mod-key>Ctrl</kbd> + <kbd>K</kbd> para abrir la paleta de comandos
+        {t.hintBefore} <kbd data-mod-key>Ctrl</kbd> + <kbd>K</kbd> {t.hintAfter}
     </button>
 </footer>
 
@@ -57,26 +65,26 @@ const groups = [
     data-open-palette
     aria-haspopup="dialog"
     aria-controls="command-palette"
-    aria-label="Abrir la paleta de comandos"
+    aria-label={t.open}
 >
     <Command />
 </button>
 
-<dialog id="command-palette" class="palette no-print" aria-label="Paleta de comandos">
+<dialog id="command-palette" class="palette no-print" aria-label={t.palette}>
     <div class="panel">
         <input
             type="text"
             role="combobox"
-            aria-label="Buscar comando"
+            aria-label={t.search}
             aria-expanded="true"
             aria-controls="command-list"
             aria-autocomplete="list"
-            placeholder="Buscar comando"
+            placeholder={t.search}
             autocomplete="off"
             spellcheck="false"
             data-palette-input
         />
-        <div id="command-list" class="list" role="listbox" aria-label="Comandos">
+        <div id="command-list" class="list" role="listbox" aria-label={t.commands}>
             {groups.map(({ id, title, commands }) => (
                 <div role="group" aria-labelledby={`group-${id}`} data-palette-group>
                     <p role="presentation" id={`group-${id}`} class="group-title">{title}</p>
@@ -98,12 +106,12 @@ const groups = [
                     ))}
                 </div>
             ))}
-            <p class="empty" hidden data-palette-empty>No se encontraron comandos</p>
+            <p class="empty" hidden data-palette-empty>{t.empty}</p>
         </div>
         <p class="shortcuts" aria-hidden="true">
-            <span><kbd>↑</kbd><kbd>↓</kbd> navegar</span>
-            <span><kbd>↵</kbd> seleccionar</span>
-            <span><kbd>Esc</kbd> cerrar</span>
+            <span><kbd>↑</kbd><kbd>↓</kbd> {t.navigate}</span>
+            <span><kbd>↵</kbd> {t.select}</span>
+            <span><kbd>Esc</kbd> {t.close}</span>
         </p>
     </div>
 </dialog>

@@ -1,9 +1,18 @@
 ---
 import Section from "@/components/Section.astro"
-import {basics} from "@cv"
-const {summary} = basics
+import type { Basics } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
+
+interface Props {
+    lang: Lang
+    basics: Basics
+}
+
+const { lang, basics } = Astro.props
+const { summary } = basics
+const t = ui[lang]
 ---
 
-<Section id="sobre-mi" title="Sobre mí">
+<Section id="about" title={t.sections.about}>
     <p>{summary}</p>
 </Section>

@@ -1,10 +1,11 @@
 import { existsSync } from "node:fs"
 import { join } from "node:path"
-import { basics } from "@cv"
+// La foto es común a los dos idiomas del CV.
+import { cvEs } from "@cv"
 
 const isRemote = (src: string) => /^https?:\/\//.test(src)
 
-const localPath = basics.image && !isRemote(basics.image) ? join(process.cwd(), "public", basics.image) : null
+const localPath = cvEs.basics.image && !isRemote(cvEs.basics.image) ? join(process.cwd(), "public", cvEs.basics.image) : null
 
 /** Ruta absoluta de la foto si está en `public/` y existe. */
 export const avatarFile = localPath && existsSync(localPath) ? localPath : null
@@ -13,7 +14,7 @@ export const avatarFile = localPath && existsSync(localPath) ? localPath : null
  * Ruta de la foto de perfil solo si existe (URL externa o archivo en `public/`).
  * Así evitamos renderizar una imagen rota mientras no se haya añadido la foto.
  */
-export const avatar = basics.image && (isRemote(basics.image) || avatarFile) ? basics.image : null
+export const avatar = cvEs.basics.image && (isRemote(cvEs.basics.image) || avatarFile) ? cvEs.basics.image : null
 
 /**
  * Imagen para las vistas previas en redes sociales (Open Graph / Twitter).
@@ -23,8 +24,9 @@ export const avatar = basics.image && (isRemote(basics.image) || avatarFile) ? b
 export const SOCIAL_IMAGE_NAME = "og-image"
 export const socialImage = avatarFile ? `/${SOCIAL_IMAGE_NAME}.jpg` : avatar
 
-export const initials = basics.name
-  .split(/\s+/)
-  .slice(0, 2)
-  .map((word) => word[0]?.toUpperCase() ?? "")
-  .join("")
+export const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase() ?? "")
+    .join("")

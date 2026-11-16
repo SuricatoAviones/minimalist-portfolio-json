@@ -1,5 +1,6 @@
 ---
-import {basics} from '@cv'
+import type { Basics } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
 import Section from '@/components/Section.astro'
 import Mail from '@/icons/Mail.astro'
 import Phone from '@/icons/Phone.astro'
@@ -9,10 +10,17 @@ import LinkedIn from '@/icons/LinkedIn.astro'
 import WorldMap from '@/icons/WorldMap.astro'
 import Download from '@/icons/Download.astro'
 import { avatar, initials } from '@/lib/avatar'
-import { CV_PDF_FILENAME, CV_PDF_URL } from '@/lib/cv-download'
+import { cvPdfFilename, cvPdfPath } from '@/lib/cv-download'
 
+interface Props {
+    lang: Lang
+    basics: Basics
+}
+
+const { lang, basics } = Astro.props
 const {name,label, location, profiles, phone, email} = basics
 const {city,region} = location
+const t = ui[lang]
 const SOCIAL_ICONS :Record<string, any> ={
     GitHub,
     LinkedIn,
@@ -21,6 +29,8 @@ const SOCIAL_ICONS :Record<string, any> ={
 
 // Versión en texto plano de los datos de contacto para la versión impresa.
 const printInfo = [email, phone, ...profiles.map(({url}) => url)].filter(Boolean).join(' • ')
+const pdfUrl = cvPdfPath(lang)
+const pdfFilename = cvPdfFilename(name)
 ---
 
 <Section>
@@ -34,13 +44,13 @@ const printInfo = [email, phone, ...profiles.map(({url}) => url)].filter(Boolean
             </p>
             <p class="print">{printInfo}</p>
             <div class="actions no-print">
-                <ul class="contact" aria-label="Contacto y redes sociales">
+                <ul class="contact" aria-label={t.hero.contact}>
                     {
                         email && (
                             <li>
                                 <a href={`mailto:${email}`}
-                                    aria-label={`Enviar un correo electrónico a ${email}`}
-                                    title={`Enviar un correo electrónico a ${name} al correo ${email}`}>
+                                    aria-label={t.hero.emailLabel(email)}
+                                    title={t.hero.emailTitle(name, email)}>
                                     <Mail />
                                 </a>
                             </li>
@@ -50,8 +60,8 @@ const printInfo = [email, phone, ...profiles.map(({url}) => url)].filter(Boolean
                         phone && (
                             <li>
                                 <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}
-                                    aria-label={`Llamar al ${phone}`}
-                                    title={`Llamar por teléfono a ${name} al número ${phone}`}>
+                                    aria-label={t.hero.phoneLabel(phone)}
+                                    title={t.hero.phoneTitle(name, phone)}>
                                     <Phone />
                                 </a>
                             </li>
@@ -63,8 +73,8 @@ const printInfo = [email, phone, ...profiles.map(({url}) => url)].filter(Boolean
                             return(
                                 <li>
                                     <a href={url}
-                                        aria-label={`Perfil de ${network} (se abre en una pestaña nueva)`}
-                                        title={`Visitar el perfil de ${name} en ${network}`}
+                                        aria-label={t.hero.profileLabel(network)}
+                                        title={t.hero.profileTitle(name, network)}
                                         target="_blank"
                                         rel="noopener noreferrer">
                                         {Icon ? <Icon /> : <span class="network">{network}</span>}
@@ -75,20 +85,20 @@ const printInfo = [email, phone, ...profiles.map(({url}) => url)].filter(Boolean
                     }
                 </ul>
                 <a class="download"
-                    href={CV_PDF_URL}
-                    download={CV_PDF_FILENAME}
+                    href={pdfUrl}
+                    download={pdfFilename}
                     type="application/pdf"
-                    title="Descargar el CV en PDF optimizado para ATS">
+                    title={t.hero.downloadTitle}>
                     <Download />
-                    Descargar CV
+                    {t.hero.download}
                 </a>
             </div>
         </div>
         <figure>
             {
                 avatar
-                    ? <img src={avatar} alt={`Foto de ${name}`} width="128" height="128" />
-                    : <div class="avatar-fallback" aria-hidden="true">{initials}</div>
+                    ? <img src={avatar} alt={t.hero.avatarAlt(name)} width="128" height="128" />
+                    : <div class="avatar-fallback" aria-hidden="true">{initials(name)}</div>
             }
         </figure>
     </div>

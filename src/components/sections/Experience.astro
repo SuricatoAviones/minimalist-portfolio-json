@@ -1,10 +1,19 @@
 ---
 import Section from "@/components/Section.astro"
-import {work} from "@cv"
-import { PRESENT_LABEL, formatMonthYear, getYear } from "@/lib/dates"
+import type { Work } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
+import { formatMonthYear, getYear } from "@/lib/dates"
+
+interface Props {
+    lang: Lang
+    work: Work[]
+}
+
+const { lang, work } = Astro.props
+const t = ui[lang]
 ---
 
-<Section id="experiencia" title="Experiencia laboral">
+<Section id="experience" title={t.sections.experience}>
     <ul class="jobs">
         {work.map(({name,startDate,endDate,position,summary,highlights,url})=>(
             <li>
@@ -13,7 +22,7 @@ import { PRESENT_LABEL, formatMonthYear, getYear } from "@/lib/dates"
                         <div>
                             <h3>
                                 {url
-                                    ? <a href={url} title={`Ver ${name}`} target="_blank" rel="noopener noreferrer">{name}</a>
+                                    ? <a href={url} title={t.experience.view(name)} target="_blank" rel="noopener noreferrer">{name}</a>
                                     : name}
                             </h3>
                             <h4>{position}</h4>
@@ -23,7 +32,7 @@ import { PRESENT_LABEL, formatMonthYear, getYear } from "@/lib/dates"
                             {" - "}
                             {endDate
                                 ? <time datetime={endDate} title={formatMonthYear(endDate)}>{getYear(endDate)}</time>
-                                : PRESENT_LABEL}
+                                : t.present}
                         </p>
                     </header>
                     <p>{summary}</p>

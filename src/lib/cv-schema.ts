@@ -15,6 +15,7 @@ import type {
   Volunteer,
   Work,
 } from "@/types/cv"
+import { ui, type Lang } from "@/i18n/ui"
 
 /*
  * Validación del JSON que sube el usuario desde la web (esquema JSON Resume).
@@ -31,6 +32,8 @@ type Obj = Record<string, unknown>
 
 const DATE_PATTERN = /^\d{4}(-\d{2}(-\d{2})?)?$/
 
+type Messages = (typeof ui)[Lang]["validation"]
+
 const isObject = (value: unknown): value is Obj =>
   typeof value === "object" && value !== null && !Array.isArray(value)
 
@@ -38,57 +41,78 @@ function fail(errors: string[], path: string, message: string) {
   errors.push(`${path}: ${message}`)
 }
 
-function readString(value: Obj, key: string, path: string, errors: string[], required = false) {
+function readString(
+  value: Obj,
+  key: string,
+  path: string,
+  errors: string[],
+  m: Messages,
+  required = false
+) {
   const raw = value[key]
   if (raw === undefined || raw === null || raw === "") {
-    if (required) fail(errors, path, "es un campo obligatorio y no puede estar vacío.")
+    if (required) fail(errors, path, m.required)
     return undefined
   }
   if (typeof raw !== "string") {
-    fail(errors, path, "debe ser texto.")
+    fail(errors, path, m.text)
     return undefined
   }
   return raw.trim()
 }
 
-function readDate(value: Obj, key: string, path: string, errors: string[], required = false): DateString | undefined {
-  const raw = readString(value, key, path, errors, required)
+function readDate(
+  value: Obj,
+  key: string,
+  path: string,
+  errors: string[],
+  m: Messages,
+  required = false
+): DateString | undefined {
+  const raw = readString(value, key, path, errors, m, required)
   if (raw === undefined) return undefined
   if (!DATE_PATTERN.test(raw)) {
-    fail(errors, path, "debe ser una fecha con formato AAAA, AAAA-MM o AAAA-MM-DD.")
+    fail(errors, path, m.date)
     return undefined
   }
   return raw
 }
 
-function readObject(value: Obj, key: string, path: string, errors: string[], required = false): Obj | undefined {
+function readObject(
+  value: Obj,
+  key: string,
+  path: string,
+  errors: string[],
+  m: Messages,
+  required = false
+): Obj | undefined {
   const raw = value[key]
   if (raw === undefined || raw === null) {
-    if (required) fail(errors, path, "es un campo obligatorio y debe ser un objeto.")
+    if (required) fail(errors, path, m.requiredObject)
     return undefined
   }
   if (!isObject(raw)) {
-    fail(errors, path, "debe ser un objeto.")
+    fail(errors, path, m.object)
     return undefined
   }
   return raw
 }
 
-function readList(value: Obj, key: string, path: string, errors: string[]): unknown[] {
+function readList(value: Obj, key: string, path: string, errors: string[], m: Messages): unknown[] {
   const raw = value[key]
   if (raw === undefined || raw === null) return []
   if (!Array.isArray(raw)) {
-    fail(errors, path, "debe ser una lista.")
+    fail(errors, path, m.list)
     return []
   }
   return raw
 }
 
-function readStringList(value: Obj, key: string, path: string, errors: string[]): string[] {
-  const list = readList(value, key, path, errors)
+function readStringList(value: Obj, key: string, path: string, errors: string[], m: Messages): string[] {
+  const list = readList(value, key, path, errors, m)
   return list.filter((item, index) => {
     if (typeof item === "string") return true
-    fail(errors, `${path}[${index}]`, "debe ser texto.")
+    fail(errors, `${path}[${index}]`, m.text)
     return false
   }) as string[]
 }
@@ -99,165 +123,168 @@ function readItems<T>(
   key: string,
   path: string,
   errors: string[],
-  readItem: (item: Obj, itemPath: string, errors: string[]) => T
+  m: Messages,
+  readItem: (item: Obj, itemPath: string, errors: string[], m: Messages) => T
 ): T[] {
-  const list = readList(value, key, path, errors)
+  const list = readList(value, key, path, errors, m)
   return list.flatMap((item, index) => {
     const itemPath = `${path}[${index}]`
     if (!isObject(item)) {
-      fail(errors, itemPath, "debe ser un objeto.")
+      fail(errors, itemPath, m.object)
       return []
     }
-    return [readItem(item, itemPath, errors)]
+    return [readItem(item, itemPath, errors, m)]
   })
 }
 
-function readBasics(value: unknown, errors: string[]): Basics | undefined {
+function readBasics(value: unknown, errors: string[], m: Messages): Basics | undefined {
   if (!isObject(value)) {
-    fail(errors, "basics", "es un campo obligatorio y debe ser un objeto.")
+    fail(errors, "basics", m.requiredObject)
     return undefined
   }
 
-  const location = readObject(value, "location", "basics.location", errors) ?? {}
-  const profiles = readItems<Profile>(value, "profiles", "basics.profiles", errors, (profile, path, errs) => ({
-    network: readString(profile, "network", `${path}.network`, errs, true) ?? "",
-    username: readString(profile, "username", `${path}.username`, errs) ?? "",
-    url: readString(profile, "url", `${path}.url`, errs, true) ?? "",
+  const location = readObject(value, "location", "basics.location", errors, m) ?? {}
+  const profiles = readItems<Profile>(value, "profiles", "basics.profiles", errors, m, (profile, path, errs, msg) => ({
+    network: readString(profile, "network", `${path}.network`, errs, msg, true) ?? "",
+    username: readString(profile, "username", `${path}.username`, errs, msg) ?? "",
+    url: readString(profile, "url", `${path}.url`, errs, msg, true) ?? "",
   }))
 
   return {
-    name: readString(value, "name", "basics.name", errors, true) ?? "",
-    label: readString(value, "label", "basics.label", errors) ?? "",
-    image: readString(value, "image", "basics.image", errors),
-    email: readString(value, "email", "basics.email", errors),
-    phone: readString(value, "phone", "basics.phone", errors),
-    url: readString(value, "url", "basics.url", errors),
-    summary: readString(value, "summary", "basics.summary", errors) ?? "",
+    name: readString(value, "name", "basics.name", errors, m, true) ?? "",
+    label: readString(value, "label", "basics.label", errors, m) ?? "",
+    image: readString(value, "image", "basics.image", errors, m),
+    email: readString(value, "email", "basics.email", errors, m),
+    phone: readString(value, "phone", "basics.phone", errors, m),
+    url: readString(value, "url", "basics.url", errors, m),
+    summary: readString(value, "summary", "basics.summary", errors, m) ?? "",
     location: {
-      address: readString(location, "address", "basics.location.address", errors),
-      postalCode: readString(location, "postalCode", "basics.location.postalCode", errors),
-      city: readString(location, "city", "basics.location.city", errors) ?? "",
-      countryCode: readString(location, "countryCode", "basics.location.countryCode", errors),
-      region: readString(location, "region", "basics.location.region", errors),
+      address: readString(location, "address", "basics.location.address", errors, m),
+      postalCode: readString(location, "postalCode", "basics.location.postalCode", errors, m),
+      city: readString(location, "city", "basics.location.city", errors, m) ?? "",
+      countryCode: readString(location, "countryCode", "basics.location.countryCode", errors, m),
+      region: readString(location, "region", "basics.location.region", errors, m),
     },
     profiles,
   }
 }
 
-function readWork(value: Obj, path: string, errors: string[]): Work {
+function readWork(value: Obj, path: string, errors: string[], m: Messages): Work {
   return {
-    name: readString(value, "name", `${path}.name`, errors) ?? "",
-    position: readString(value, "position", `${path}.position`, errors, true) ?? "",
-    url: readString(value, "url", `${path}.url`, errors),
-    location: readString(value, "location", `${path}.location`, errors),
-    startDate: readDate(value, "startDate", `${path}.startDate`, errors, true) ?? "",
-    endDate: readDate(value, "endDate", `${path}.endDate`, errors),
-    summary: readString(value, "summary", `${path}.summary`, errors) ?? "",
-    highlights: readStringList(value, "highlights", `${path}.highlights`, errors),
+    name: readString(value, "name", `${path}.name`, errors, m) ?? "",
+    position: readString(value, "position", `${path}.position`, errors, m, true) ?? "",
+    url: readString(value, "url", `${path}.url`, errors, m),
+    location: readString(value, "location", `${path}.location`, errors, m),
+    startDate: readDate(value, "startDate", `${path}.startDate`, errors, m, true) ?? "",
+    endDate: readDate(value, "endDate", `${path}.endDate`, errors, m),
+    summary: readString(value, "summary", `${path}.summary`, errors, m) ?? "",
+    highlights: readStringList(value, "highlights", `${path}.highlights`, errors, m),
   }
 }
 
-function readVolunteer(value: Obj, path: string, errors: string[]): Volunteer {
+function readVolunteer(value: Obj, path: string, errors: string[], m: Messages): Volunteer {
   return {
-    organization: readString(value, "organization", `${path}.organization`, errors, true) ?? "",
-    position: readString(value, "position", `${path}.position`, errors, true) ?? "",
-    url: readString(value, "url", `${path}.url`, errors),
-    startDate: readDate(value, "startDate", `${path}.startDate`, errors, true) ?? "",
-    endDate: readDate(value, "endDate", `${path}.endDate`, errors),
-    summary: readString(value, "summary", `${path}.summary`, errors) ?? "",
-    highlights: readStringList(value, "highlights", `${path}.highlights`, errors),
+    organization: readString(value, "organization", `${path}.organization`, errors, m, true) ?? "",
+    position: readString(value, "position", `${path}.position`, errors, m, true) ?? "",
+    url: readString(value, "url", `${path}.url`, errors, m),
+    startDate: readDate(value, "startDate", `${path}.startDate`, errors, m, true) ?? "",
+    endDate: readDate(value, "endDate", `${path}.endDate`, errors, m),
+    summary: readString(value, "summary", `${path}.summary`, errors, m) ?? "",
+    highlights: readStringList(value, "highlights", `${path}.highlights`, errors, m),
   }
 }
 
-function readEducation(value: Obj, path: string, errors: string[]): Education {
+function readEducation(value: Obj, path: string, errors: string[], m: Messages): Education {
   return {
-    institution: readString(value, "institution", `${path}.institution`, errors, true) ?? "",
-    url: readString(value, "url", `${path}.url`, errors),
-    area: readString(value, "area", `${path}.area`, errors, true) ?? "",
-    studyType: readString(value, "studyType", `${path}.studyType`, errors),
-    startDate: readDate(value, "startDate", `${path}.startDate`, errors, true) ?? "",
-    endDate: readDate(value, "endDate", `${path}.endDate`, errors),
-    score: readString(value, "score", `${path}.score`, errors),
-    courses: readStringList(value, "courses", `${path}.courses`, errors),
+    institution: readString(value, "institution", `${path}.institution`, errors, m, true) ?? "",
+    url: readString(value, "url", `${path}.url`, errors, m),
+    area: readString(value, "area", `${path}.area`, errors, m, true) ?? "",
+    studyType: readString(value, "studyType", `${path}.studyType`, errors, m),
+    startDate: readDate(value, "startDate", `${path}.startDate`, errors, m, true) ?? "",
+    endDate: readDate(value, "endDate", `${path}.endDate`, errors, m),
+    score: readString(value, "score", `${path}.score`, errors, m),
+    courses: readStringList(value, "courses", `${path}.courses`, errors, m),
   }
 }
 
-function readAward(value: Obj, path: string, errors: string[]): Award {
+function readAward(value: Obj, path: string, errors: string[], m: Messages): Award {
   return {
-    title: readString(value, "title", `${path}.title`, errors, true) ?? "",
-    date: readDate(value, "date", `${path}.date`, errors),
-    awarder: readString(value, "awarder", `${path}.awarder`, errors, true) ?? "",
-    summary: readString(value, "summary", `${path}.summary`, errors),
+    title: readString(value, "title", `${path}.title`, errors, m, true) ?? "",
+    date: readDate(value, "date", `${path}.date`, errors, m),
+    awarder: readString(value, "awarder", `${path}.awarder`, errors, m, true) ?? "",
+    summary: readString(value, "summary", `${path}.summary`, errors, m),
   }
 }
 
-function readCertificate(value: Obj, path: string, errors: string[]): Certificate {
+function readCertificate(value: Obj, path: string, errors: string[], m: Messages): Certificate {
   return {
-    name: readString(value, "name", `${path}.name`, errors, true) ?? "",
-    date: readDate(value, "date", `${path}.date`, errors),
-    issuer: readString(value, "issuer", `${path}.issuer`, errors, true) ?? "",
-    url: readString(value, "url", `${path}.url`, errors),
+    name: readString(value, "name", `${path}.name`, errors, m, true) ?? "",
+    date: readDate(value, "date", `${path}.date`, errors, m),
+    issuer: readString(value, "issuer", `${path}.issuer`, errors, m, true) ?? "",
+    url: readString(value, "url", `${path}.url`, errors, m),
   }
 }
 
-function readPublication(value: Obj, path: string, errors: string[]): Publication {
+function readPublication(value: Obj, path: string, errors: string[], m: Messages): Publication {
   return {
-    name: readString(value, "name", `${path}.name`, errors, true) ?? "",
-    publisher: readString(value, "publisher", `${path}.publisher`, errors, true) ?? "",
-    releaseDate: readDate(value, "releaseDate", `${path}.releaseDate`, errors),
-    url: readString(value, "url", `${path}.url`, errors),
-    summary: readString(value, "summary", `${path}.summary`, errors),
+    name: readString(value, "name", `${path}.name`, errors, m, true) ?? "",
+    publisher: readString(value, "publisher", `${path}.publisher`, errors, m, true) ?? "",
+    releaseDate: readDate(value, "releaseDate", `${path}.releaseDate`, errors, m),
+    url: readString(value, "url", `${path}.url`, errors, m),
+    summary: readString(value, "summary", `${path}.summary`, errors, m),
   }
 }
 
-function readSkill(value: Obj, path: string, errors: string[]): Skill {
+function readSkill(value: Obj, path: string, errors: string[], m: Messages): Skill {
   return {
-    name: readString(value, "name", `${path}.name`, errors, true) ?? "",
-    level: readString(value, "level", `${path}.level`, errors),
-    keywords: readStringList(value, "keywords", `${path}.keywords`, errors),
+    name: readString(value, "name", `${path}.name`, errors, m, true) ?? "",
+    level: readString(value, "level", `${path}.level`, errors, m),
+    keywords: readStringList(value, "keywords", `${path}.keywords`, errors, m),
   }
 }
 
-function readLanguage(value: Obj, path: string, errors: string[]): Language {
+function readLanguage(value: Obj, path: string, errors: string[], m: Messages): Language {
   return {
-    language: readString(value, "language", `${path}.language`, errors, true) ?? "",
-    fluency: readString(value, "fluency", `${path}.fluency`, errors, true) ?? "",
+    language: readString(value, "language", `${path}.language`, errors, m, true) ?? "",
+    fluency: readString(value, "fluency", `${path}.fluency`, errors, m, true) ?? "",
   }
 }
 
-function readInterest(value: Obj, path: string, errors: string[]): Interest {
+function readInterest(value: Obj, path: string, errors: string[], m: Messages): Interest {
   return {
-    name: readString(value, "name", `${path}.name`, errors, true) ?? "",
-    keywords: readStringList(value, "keywords", `${path}.keywords`, errors),
+    name: readString(value, "name", `${path}.name`, errors, m, true) ?? "",
+    keywords: readStringList(value, "keywords", `${path}.keywords`, errors, m),
   }
 }
 
-function readReference(value: Obj, path: string, errors: string[]): Reference {
+function readReference(value: Obj, path: string, errors: string[], m: Messages): Reference {
   return {
-    name: readString(value, "name", `${path}.name`, errors, true) ?? "",
-    reference: readString(value, "reference", `${path}.reference`, errors, true) ?? "",
+    name: readString(value, "name", `${path}.name`, errors, m, true) ?? "",
+    reference: readString(value, "reference", `${path}.reference`, errors, m, true) ?? "",
   }
 }
 
-function readProject(value: Obj, path: string, errors: string[]): Project {
+function readProject(value: Obj, path: string, errors: string[], m: Messages): Project {
   return {
-    name: readString(value, "name", `${path}.name`, errors, true) ?? "",
+    name: readString(value, "name", `${path}.name`, errors, m, true) ?? "",
     isActive: typeof value.isActive === "boolean" ? value.isActive : undefined,
-    description: readString(value, "description", `${path}.description`, errors) ?? "",
-    highlights: readStringList(value, "highlights", `${path}.highlights`, errors),
-    url: readString(value, "url", `${path}.url`, errors),
-    github: readString(value, "github", `${path}.github`, errors),
+    description: readString(value, "description", `${path}.description`, errors, m) ?? "",
+    highlights: readStringList(value, "highlights", `${path}.highlights`, errors, m),
+    url: readString(value, "url", `${path}.url`, errors, m),
+    github: readString(value, "github", `${path}.github`, errors, m),
   }
 }
 
 /** Valida y normaliza un CV en formato JSON Resume. */
-export function validateCv(data: unknown): CvValidation {
+export function validateCv(data: unknown, lang: Lang = "es"): CvValidation {
+  const m = ui[lang].validation
+
   if (!isObject(data)) {
-    return { ok: false, errors: ["El archivo debe contener un objeto JSON con los datos del CV."] }
+    return { ok: false, errors: [m.root] }
   }
 
   const errors: string[] = []
-  const basics = readBasics(data.basics, errors)
+  const basics = readBasics(data.basics, errors, m)
 
   const cv: CV = {
     basics: basics ?? {
@@ -267,17 +294,17 @@ export function validateCv(data: unknown): CvValidation {
       location: { city: "" },
       profiles: [],
     },
-    work: readItems<Work>(data, "work", "work", errors, readWork),
-    volunteer: readItems<Volunteer>(data, "volunteer", "volunteer", errors, readVolunteer),
-    education: readItems<Education>(data, "education", "education", errors, readEducation),
-    awards: readItems<Award>(data, "awards", "awards", errors, readAward),
-    certificates: readItems<Certificate>(data, "certificates", "certificates", errors, readCertificate),
-    publications: readItems<Publication>(data, "publications", "publications", errors, readPublication),
-    skills: readItems<Skill>(data, "skills", "skills", errors, readSkill),
-    languages: readItems<Language>(data, "languages", "languages", errors, readLanguage),
-    interests: readItems<Interest>(data, "interests", "interests", errors, readInterest),
-    references: readItems<Reference>(data, "references", "references", errors, readReference),
-    projects: readItems<Project>(data, "projects", "projects", errors, readProject),
+    work: readItems<Work>(data, "work", "work", errors, m, readWork),
+    volunteer: readItems<Volunteer>(data, "volunteer", "volunteer", errors, m, readVolunteer),
+    education: readItems<Education>(data, "education", "education", errors, m, readEducation),
+    awards: readItems<Award>(data, "awards", "awards", errors, m, readAward),
+    certificates: readItems<Certificate>(data, "certificates", "certificates", errors, m, readCertificate),
+    publications: readItems<Publication>(data, "publications", "publications", errors, m, readPublication),
+    skills: readItems<Skill>(data, "skills", "skills", errors, m, readSkill),
+    languages: readItems<Language>(data, "languages", "languages", errors, m, readLanguage),
+    interests: readItems<Interest>(data, "interests", "interests", errors, m, readInterest),
+    references: readItems<Reference>(data, "references", "references", errors, m, readReference),
+    projects: readItems<Project>(data, "projects", "projects", errors, m, readProject),
   }
 
   if (errors.length > 0) return { ok: false, errors }
