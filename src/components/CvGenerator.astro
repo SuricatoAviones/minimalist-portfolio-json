@@ -1,0 +1,305 @@
+---
+import Download from "@/icons/Download.astro"
+import Upload from "@/icons/Upload.astro"
+import { CV_PDF_URL } from "@/lib/cv-download"
+---
+
+<section id="generador" class="generator no-print" aria-labelledby="generador-title">
+    <h2 id="generador-title">Genera tu CV desde un JSON</h2>
+    <p>
+        Sube tu archivo <code>cv.json</code> (formato
+        <a href="https://jsonresume.org/schema"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Esquema JSON Resume (se abre en una pestaña nueva)">JSON Resume</a>)
+        y descarga un PDF con el mismo diseño y formato compatible con ATS que
+        <a href={CV_PDF_URL}>mi CV</a>. El archivo se procesa en tu navegador: no se sube a ningún servidor.
+    </p>
+
+    <div class="panel" data-cv-generator>
+        <label class="dropzone" for="cv-json" data-cv-dropzone>
+            <Upload />
+            <span class="dropzone-title">Arrastra tu <code>cv.json</code> o pulsa para seleccionarlo</span>
+            <span class="dropzone-hint">JSON Resume · máximo 4 MB</span>
+            <input class="visually-hidden" id="cv-json" type="file" accept=".json,application/json" data-cv-input />
+        </label>
+
+        <p class="status" role="status" aria-live="polite" data-cv-status></p>
+        <ul class="errors" data-cv-errors hidden></ul>
+
+        <button class="download" type="button" disabled data-cv-download>
+            <Download />
+            Descargar CV
+        </button>
+
+        <noscript>
+            <p class="hint">Necesitas activar JavaScript para generar un PDF desde tu archivo.</p>
+        </noscript>
+    </div>
+</section>
+
+<script>
+    import { validateCv } from "@/lib/cv-schema"
+    import { cvFilename } from "@/lib/cv-filename"
+
+    const MAX_SIZE = 4 * 1024 * 1024
+    const MAX_LISTED_ERRORS = 12
+
+    const root = document.querySelector<HTMLElement>("[data-cv-generator]")
+
+    if (root) {
+        const input = root.querySelector<HTMLInputElement>("[data-cv-input]")
+        const dropzone = root.querySelector<HTMLElement>("[data-cv-dropzone]")
+        const status = root.querySelector<HTMLElement>("[data-cv-status]")
+        const errors = root.querySelector<HTMLUListElement>("[data-cv-errors]")
+        const button = root.querySelector<HTMLButtonElement>("[data-cv-download]")
+
+        let downloadUrl: string | null = null
+        let downloadName = "CV.pdf"
+        let job = 0
+
+        const setStatus = (message: string) => {
+            if (status) status.textContent = message
+        }
+
+        const clearErrors = () => {
+            if (!errors) return
+            errors.replaceChildren()
+            errors.hidden = true
+        }
+
+        const showErrors = (messages: string[]) => {
+            if (!errors) return
+            clearErrors()
+
+            for (const message of messages.slice(0, MAX_LISTED_ERRORS)) {
+                const item = document.createElement("li")
+                item.textContent = message
+                errors.append(item)
+            }
+
+            if (messages.length > MAX_LISTED_ERRORS) {
+                const item = document.createElement("li")
+                item.textContent = `Y ${messages.length - MAX_LISTED_ERRORS} problemas más.`
+                errors.append(item)
+            }
+
+            errors.hidden = false
+        }
+
+        const resetDownload = () => {
+            if (downloadUrl) URL.revokeObjectURL(downloadUrl)
+            downloadUrl = null
+            if (button) button.disabled = true
+        }
+
+        const generate = async (file: File) => {
+            const current = ++job
+            resetDownload()
+            clearErrors()
+
+            if (file.size > MAX_SIZE) {
+                setStatus("El archivo supera los 4 MB. Prueba con un JSON más pequeño.")
+                return
+            }
+
+            let data: unknown
+            try {
+                data = JSON.parse(await file.text())
+            } catch (error) {
+                if (current !== job) return
+                const detail = error instanceof Error ? error.message : "formato desconocido"
+                setStatus(`El archivo no contiene JSON válido (${detail}).`)
+                return
+            }
+
+            if (current !== job) return
+
+            const validation = validateCv(data)
+            if (!validation.ok) {
+                setStatus(
+                    validation.errors.length === 1
+                        ? "Encontramos un problema en el JSON:"
+                        : `Encontramos ${validation.errors.length} problemas en el JSON:`
+                )
+                showErrors(validation.errors)
+                return
+            }
+
+            setStatus("Generando el PDF…")
+            if (button) button.disabled = true
+
+            try {
+                const { createCvPdfBrowser } = await import("@/lib/cv-pdf-browser")
+                const pdf = await createCvPdfBrowser(validation.cv)
+                if (current !== job) return
+
+                const blob = new Blob([new Uint8Array(pdf)], { type: "application/pdf" })
+
+                downloadUrl = URL.createObjectURL(blob)
+                downloadName = cvFilename(validation.cv.basics.name)
+                if (button) button.disabled = false
+                setStatus(`CV de ${validation.cv.basics.name} listo. Pulsa «Descargar CV» para guardarlo.`)
+            } catch (error) {
+                if (current !== job) return
+                console.error(error)
+                setStatus("No se pudo generar el PDF. Revisa que el JSON tenga los datos del CV.")
+            }
+        }
+
+        const handleFile = (file: File | undefined) => {
+            if (!file) return
+            void generate(file)
+        }
+
+        input?.addEventListener("change", () => {
+            handleFile(input.files?.[0])
+            input.value = ""
+        })
+
+        for (const event of ["dragenter", "dragover"] as const) {
+            dropzone?.addEventListener(event, (event) => {
+                event.preventDefault()
+                dropzone.classList.add("is-over")
+            })
+        }
+
+        for (const event of ["dragleave", "dragend"] as const) {
+            dropzone?.addEventListener(event, () => dropzone.classList.remove("is-over"))
+        }
+
+        dropzone?.addEventListener("drop", (event) => {
+            event.preventDefault()
+            dropzone.classList.remove("is-over")
+            handleFile(event.dataTransfer?.files?.[0])
+        })
+
+        button?.addEventListener("click", () => {
+            if (!downloadUrl) return
+
+            const link = document.createElement("a")
+            link.href = downloadUrl
+            link.download = downloadName
+            link.click()
+        })
+
+        // Si el archivo se suelta fuera de la zona, el navegador lo abriría y se perdería la página.
+        const dragsFiles = (event: DragEvent) => event.dataTransfer?.types.includes("Files") ?? false
+        window.addEventListener("dragover", (event) => {
+            if (dragsFiles(event)) event.preventDefault()
+        })
+        window.addEventListener("drop", (event) => {
+            if (dragsFiles(event)) event.preventDefault()
+        })
+    }
+</script>
+
+<style>
+    .generator {
+        max-width: 700px;
+        margin: 0 auto 48px;
+    }
+    h2 {
+        margin-bottom: 8px;
+        font-weight: 700;
+        line-height: 1.5;
+        font-size: 1.5rem;
+    }
+    code {
+        background: var(--color-chip);
+        color: var(--color-chip-text);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-family: var(--font-mono);
+        font-size: 0.8em;
+    }
+    .panel {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+        padding: 16px;
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        background: var(--color-surface);
+    }
+    .dropzone {
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+        padding: 24px 16px;
+        border: 1px dashed var(--color-border-strong);
+        border-radius: 8px;
+        text-align: center;
+        color: var(--color-muted);
+        cursor: pointer;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .dropzone:hover,
+    .dropzone.is-over,
+    .dropzone:focus-within {
+        background: var(--color-chip);
+        border-color: var(--color-faint);
+    }
+    .dropzone > :global(svg) {
+        width: 20px;
+        height: 20px;
+        margin-bottom: 4px;
+        color: var(--color-faint);
+    }
+    .dropzone-title {
+        color: var(--color-text);
+        font-size: 0.85rem;
+    }
+    .dropzone-hint,
+    .hint {
+        font-size: 0.75rem;
+        color: var(--color-faint);
+    }
+    .status {
+        min-height: 1.3em;
+        font-size: 0.8rem;
+    }
+    .errors {
+        display: grid;
+        gap: 4px;
+        margin: 0;
+        padding-left: 18px;
+        list-style: disc;
+        font-size: 0.78rem;
+        line-height: 1.45;
+        color: var(--color-danger);
+    }
+    .errors[hidden] {
+        display: none;
+    }
+    .download {
+        justify-self: start;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 34px;
+        padding: 0 12px;
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--color-text);
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+    .download:hover:not(:disabled) {
+        background: var(--color-chip);
+        border-color: var(--color-border-strong);
+    }
+    .download:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    @media (width <= 700px) {
+        .generator {
+            margin-bottom: 38px;
+        }
+    }
+</style>

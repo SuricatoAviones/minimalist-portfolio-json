@@ -8,17 +8,19 @@ Basado en [midudev/minimalist-portfolio-json](https://github.com/midudev/minimal
 
 - **Un solo origen de datos**: edita `cv.json` y se actualizan la web y el PDF.
 - **CV en PDF compatible con ATS** en `/cv.pdf`, con botón «Descargar CV» y nombre de archivo `Nombre-Apellidos-CV.pdf`.
+- **Generador de CV desde JSON**: sube tu propio `cv.json` (JSON Resume) en la página y descarga el PDF equivalente, validado en el navegador y sin enviar el archivo a ningún servidor.
 - **Paleta de comandos** con <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd> (o el botón flotante en móvil): descargar CV, imprimir, enviar correo, llamar y abrir redes sociales.
 - **Modo claro y oscuro** automático según el sistema.
 - **Versión imprimible**: al imprimir se ocultan los controles y se muestran los datos de contacto en texto.
 - **Accesible**: HTML semántico, navegación por teclado, etiquetas ARIA y sin violaciones en [axe](https://github.com/dequelabs/axe-core) (WCAG 2.2 AA).
 - **SEO**: metadatos Open Graph/Twitter (con una copia JPEG de tu foto para las vistas previas), URL canónica y datos estructurados `schema.org/Person`.
-- **Responsive** y 100 % estático (sin JavaScript salvo la paleta de comandos).
+- **Responsive** y 100 % estático (JavaScript solo para la paleta de comandos y el generador de CV, que carga su librería al usarse).
 
 ## 🧰 Tecnologías
 
 - [Astro 4](https://docs.astro.build) + TypeScript (modo `strict`)
 - [PDFKit](https://pdfkit.org) para generar el PDF y [sharp](https://sharp.pixelplumbing.com) para la imagen de vista previa, ambos en tiempo de build
+- [pdf-lib](https://pdf-lib.js.org) para generar el PDF a partir del JSON que sube el visitante, en el navegador
 - [pnpm](https://pnpm.io) como gestor de paquetes
 
 ## 🚀 Empezar
@@ -62,6 +64,16 @@ El endpoint `src/pages/cv.pdf.ts` genera el PDF con `src/lib/cv-pdf.ts`; en `pnp
 
 Para comprobar cómo lo «lee» un ATS puedes extraer el texto, por ejemplo con `pdftotext -raw dist/cv.pdf -`.
 
+## 🧩 Generar un CV desde tu JSON
+
+La sección «Genera tu CV desde un JSON», al final de la página, permite subir cualquier archivo [JSON Resume](https://jsonresume.org/schema) y descargar su PDF:
+
+1. Elige (o arrastra) un `.json` de hasta 4 MB.
+2. Se valida en el navegador con `src/lib/cv-schema.ts`: avisa con la ruta exacta de cada problema (`work[1].startDate: debe ser una fecha con formato AAAA…`).
+3. Si todo es correcto, `src/lib/cv-pdf-browser.ts` genera el PDF con pdf-lib y `src/lib/cv-content.ts` compone las secciones, y el archivo se descarga como `Nombre-Apellidos-CV.pdf`.
+
+El archivo **no se sube a ningún servidor**: todo ocurre en el navegador y la web sigue siendo estática. El diseño y el orden del contenido son los mismos que los del CV de `/cv.pdf`, porque ambos generadores comparten `cv-content.ts` y `cv-pdf-theme.ts`. La única diferencia es que el PDF generado en el navegador no es un PDF etiquetado (pdf-lib no lo permite), aunque conserva texto real, una sola columna y encabezados estándar, que es lo que necesitan los ATS.
+
 ## 🧞 Comandos
 
 | Comando              | Acción                                                  |
@@ -83,12 +95,18 @@ Para comprobar cómo lo «lee» un ATS puedes extraer el texto, por ejemplo con 
     ├── cv.ts                # Módulo tipado del CV (alias @cv)
     ├── types/cv.ts          # Tipos del esquema JSON Resume
     ├── lib/
-    │   ├── cv-pdf.ts        # Generador del PDF compatible con ATS
+    │   ├── cv-content.ts    # Modelo de secciones que comparten ambos PDF
+    │   ├── cv-pdf.ts        # Generador del PDF del build (PDFKit, PDF etiquetado)
+    │   ├── cv-pdf-browser.ts# Generador del PDF en el navegador (pdf-lib)
+    │   ├── cv-pdf-theme.ts  # Tamaños, colores y márgenes del PDF
+    │   ├── cv-schema.ts     # Validación del JSON que sube el visitante
+    │   ├── cv-filename.ts   # Nombre de archivo `Nombre-Apellidos-CV.pdf`
     │   ├── cv-download.ts   # Ruta y nombre del archivo PDF
     │   ├── dates.ts         # Formato de fechas
     │   └── avatar.ts        # Foto de perfil, iniciales e imagen social
     ├── components/
     │   ├── KeyboardManager.astro  # Paleta de comandos (Ctrl/⌘ + K)
+    │   ├── CvGenerator.astro      # Subida de JSON y descarga del PDF
     │   ├── Section.astro
     │   └── sections/        # Hero, About, Experience, Education, Projects, Skills
     ├── icons/               # Iconos SVG como componentes

@@ -30,13 +30,19 @@ Antes de dar una tarea por terminada, **`pnpm build` debe pasar sin errores ni a
 ```text
 cv.json ──► src/cv.ts (alias @cv, tipado con src/types/cv.ts)
               ├─► src/components/sections/*.astro ─► src/pages/index.astro
-              └─► src/lib/cv-pdf.ts ─► src/pages/cv.pdf.ts ─► dist/cv.pdf
+              └─► src/lib/cv-content.ts
+                    ├─► src/lib/cv-pdf.ts ─► src/pages/cv.pdf.ts ─► dist/cv.pdf
+                    └─► src/lib/cv-pdf-browser.ts ─► CvGenerator.astro (PDF al subir un JSON)
 ```
 
 - `@cv` apunta a `src/cv.ts` (no al JSON): importa así `import { basics, work } from "@cv"`. Ese módulo valida `cv.json` contra el tipo `CV`.
 - `@/*` apunta a `src/*`.
+- `src/lib/cv-content.ts`: modelo intermedio (secciones y bloques) que comparten el PDF del build y el del navegador. **Añade o reordena secciones aquí**, no en cada generador, para que ambos PDF coincidan.
+- `src/lib/cv-pdf-theme.ts`: tamaños, colores, márgenes y fuentes del PDF; cualquier retoque visual debe ir en este archivo.
+- `src/lib/cv-schema.ts`: validación estricta del JSON que sube el visitante (mensajes en español con la ruta del campo). Normaliza las listas opcionales a `[]`; no usa APIs de Node para que funcione en el navegador.
+- `src/components/CvGenerator.astro`: sección «Genera tu CV desde un JSON». Carga pdf-lib con `import()` solo al usarse, para no penalizar la carga inicial. El archivo del visitante nunca sale del navegador.
 - `src/lib/dates.ts`: formatea fechas parseando el texto (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`). **No uses `new Date()`** con fechas del CV: provoca desfases de zona horaria.
-- `src/lib/cv-download.ts`: ruta (`/cv.pdf`) y nombre del archivo descargable. Reutilízalo en lugar de escribir la ruta a mano.
+- `src/lib/cv-download.ts`: ruta (`/cv.pdf`) y nombre del archivo descargable (calculado con `src/lib/cv-filename.ts`). Reutilízalo en lugar de escribir la ruta a mano.
 - `src/lib/avatar.ts`: usa la foto de `basics.image` solo si existe en `public/`; si no, iniciales. `src/pages/[image].jpg.ts` genera con sharp `/og-image.jpg` (las redes sociales no siempre admiten AVIF) para `og:image`/`twitter:image`.
 - `src/components/KeyboardManager.astro`: paleta de comandos con `<dialog>` nativo y patrón combobox + listbox. Sin dependencias.
 - `src/layouts/Layout.astro`: SEO, JSON-LD, estilos globales y **tokens de color** (`--color-*`) con tema claro/oscuro.
@@ -64,6 +70,13 @@ Cualquier cambio en `src/lib/cv-pdf.ts` debe mantener:
 - Metadatos (`Title`, `Author`, `Subject`, `Keywords`) e idioma `es-ES`.
 
 Comprobación tras cambiar el PDF: `pnpm build` y extrae el texto (`pdftotext -raw dist/cv.pdf -` u otra herramienta). El texto debe salir en orden, con tildes correctas y sin caracteres extraños.
+
+`src/lib/cv-pdf-browser.ts` (PDF que genera el visitante con pdf-lib) debe cumplir las mismas reglas salvo el etiquetado, que pdf-lib no soporta:
+
+- Dibuja cada línea dentro de un único bloque de texto (`beginText`/`endText`) y agrupa las palabras con la misma fuente: si se dibuja palabra por palabra, la extracción añade saltos de línea entre ellas.
+- Reutiliza la fuente registrada en la página (`fontKey`) en lugar de llamar a `drawText` con `font`; si no, pdf-lib crea un diccionario de fuente por palabra y el PDF se hincha.
+- Las fuentes estándar solo admiten WinAnsi: pasa el texto por `sanitize()` antes de medirlo y dibujarlo.
+- Usa el modelo de `cv-content.ts` y los tokens de `cv-pdf-theme.ts`; no dupliques textos ni medidas.
 
 ## Skills disponibles
 
